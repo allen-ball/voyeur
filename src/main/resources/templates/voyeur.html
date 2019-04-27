@@ -9,11 +9,21 @@
     <nav th:with="brand = ${@environment.getProperty('application.brand')}">
       <a th:text="${brand ?: 'Home'}" th:href="@{/}"/>
       <ul>
+        <li><a th:text="'Interfaces'" th:href="@{/interfaces}"/></li>
         <li><a th:text="'SSDP'" th:href="@{/ssdp}"/></li>
       </ul>
     </nav>
   </header>
   <main th:switch="${#request.servletPath}">
+    <table th:case="'/interfaces'">
+      <tbody>
+        <tr th:each="interface : ${interfaces}">
+          <td th:text="${interface.displayName}"/>
+          <!--/* <td th:text="${interface.hardwareAddress}"/> */-->
+          <td th:text="${interface.interfaceAddresses}"/>
+        </tr>
+      </tbody>
+    </table>
     <table th:case="'/ssdp'">
       <tbody>
         <tr th:each="entry : ${ssdp.entrySet()}">

@@ -7,6 +7,8 @@ package voyeur;
 
 import ball.spring.HTML5Template;
 import ball.ssdp.SSDPDiscoveryCache;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.apache.logging.log4j.LogManager;
@@ -32,10 +34,15 @@ public class UIController extends HTML5Template {
 
     @Autowired private SSDPDiscoveryCache cache;
 
+    @ModelAttribute("interfaces")
+    public Enumeration<NetworkInterface> interfaces() throws Exception {
+        return NetworkInterface.getNetworkInterfaces();
+    }
+
     @ModelAttribute("ssdp")
     public SSDPDiscoveryCache ssdp() { return cache; }
 
-    @RequestMapping(value = { "/", "/ssdp" })
+    @RequestMapping(value = { "/", "/interfaces", "/ssdp" })
     public String root(Model model) { return VIEW; }
 
     @RequestMapping(value = { "/index", "/index.htm", "/index.html" })
