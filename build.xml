@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:resolver="antlib:org.apache.maven.resolver.ant"
+         xmlns:spring-boot="antlib:org.springframework.boot.ant"
+         xmlns:http="antlib:ball.http.ant"
+         xmlns:util="antlib:ball.util.ant"
+         name="voyeur" basedir="." default="jar">
+  <description>
+    voyeur.jar
+    -------------------------
+    Local Area Network Voyeur
+
+    $Id$
+  </description>
+
+  <resolver:resolve>
+    <dependencies>
+      <dependency coords="ball:parent:5:xml:compile"/>
+    </dependencies>
+    <properties/>
+  </resolver:resolve>
+  <import file="${ball:parent:xml}"/>
+
+  <target name="spring-boot:findmainclass"
+          description="--> Invokes &lt;spring-boot:findmainclass/&gt; task."
+          depends="jar-classes">
+    <spring-boot:findmainclass classesroot="${target.classes.dir}"
+                               property="main-class"/>
+    <echo>${main-class}</echo>
+  </target>
+</project>

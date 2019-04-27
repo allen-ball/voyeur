@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id$ -->
+<thlogic>
+  <attr sel="head">
+    <attr sel="style[0]" th:text="'
+body { padding-top: 60px; margin-bottom: 60px; }
+@media (max-width: 979px) { body { padding-top: 0px; } }
+'"/>
+  </attr>
+  <attr sel="body">
+    <attr sel="/header"
+          th:classappend="'fixed-top text-white bg-dark navbar navbar-dark'">
+      <attr sel="/nav" th:classappend="'container navbar-expand-md'"/>
+      <attr sel="nav/a[0]" th:classappend="'navbar-brand'"/>
+      <attr sel="nav/ul" th:classappend="'navbar-nav text-white bg-dark'"/>
+      <attr sel="nav/ul/li" th:classappend="'navbar-item dropdown'"/>
+      <attr sel="nav/ul/li/a" th:classappend="'btn nav-link'"/>
+      <attr sel="nav//ul/li/button"
+            th:classappend="'btn dropdown-toggle text-white bg-dark'"
+            th:id="${#ids.seq('dropdown')}"
+            th:data-toggle="'dropdown'"
+            th:aria-haspopup="true" th:aria-expanded="false"/>
+      <attr sel="nav//ul/li/ul"
+            th:classappend="'dropdown-menu text-white bg-dark'"
+            th:aria-labelledby="${#ids.prev('dropdown')}"/>
+      <attr sel="nav//ul/li/ul/li" th:classappend="'nav-item dropdown'"/>
+      <attr sel="nav//ul/li/ul/li/a"
+            th:classappend="'btn nav-link dropdown-item text-white bg-dark'"/>
+    </attr>
+    <attr sel="main" th:classappend="'container'"/>
+    <attr sel="/footer" th:classappend="'fixed-bottom text-white bg-dark'">
+      <attr sel="/nav" th:classappend="'container navbar navbar-dark'">
+        <attr sel="/span[0]" th:classappend="'col-sm text-left'"/>
+        <attr sel="/span[1]" th:classappend="'col-sm-3 text-center'"/>
+        <attr sel="/span[2]" th:classappend="'col-sm text-right'"/>
+      </attr>
+      <attr sel="nav//a" th:classappend="'btn btn-link'"/>
+    </attr>
+  </attr>
+</thlogic>

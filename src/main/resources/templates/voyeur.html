@@ -1,0 +1,26 @@
+<!--/* $Id$ */-->
+<head>
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}"/>
+  <style/>
+  <script th:src="@{/js/plugins.js}" th:text="''"/>
+</head>
+<body>
+  <header>
+    <nav th:with="brand = ${@environment.getProperty('application.brand')}">
+      <a th:text="${brand ?: 'Home'}" th:href="@{/}"/>
+      <ul>
+      </ul>
+    </nav>
+  </header>
+  <main>
+  </main>
+  <footer>
+    <nav>
+      <span th:text="${#request.servletPath}"/>
+      <span th:text="''"/>
+      <span th:text="''"/>
+    </nav>
+  </footer>
+  <script th:src="@{/webjars/jquery/jquery.js}" th:text="''"/>
+  <script th:src="@{/webjars/bootstrap/js/bootstrap.js}" th:text="''"/>
+</body>
