@@ -9,10 +9,42 @@
     <nav th:with="brand = ${@environment.getProperty('application.brand')}">
       <a th:text="${brand ?: 'Home'}" th:href="@{/}"/>
       <ul>
+        <li><a th:text="'SSDP'" th:href="@{/ssdp}"/></li>
       </ul>
     </nav>
   </header>
-  <main>
+  <main th:switch="${#request.servletPath}">
+    <table th:case="'/ssdp'">
+      <tbody>
+        <tr th:each="entry : ${ssdp.entrySet()}">
+          <td th:object="${entry.value.SSDPMessage}">
+            <p>
+              <code th:text="${entry.key}">
+                uuid:XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+              </code>
+            </p>
+            <p>
+              <a th:href="*{location}" th:target="_newtab">
+                <code th:text="*{location}">
+                  http://w.x.y.z:80/dri/device.xml
+                </code>
+              </a>
+            </p>
+            <pre th:text="*{toString().trim()}">
+              HTTP/1.1 200 OK
+              Server: Vendor/1.0 UPnP/1.0
+              ST: uuid:XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+              Location: http://w.x.y.z:80/dri/device.xml
+              Cache-Control: max-age=1800
+              USN: uuid:XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+              Ext:
+              Content-Length: 0
+              Date: Sun, 25 Feb 2018 22:49:00 GMT
+            </pre>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </main>
   <footer>
     <nav>

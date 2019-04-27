@@ -27,7 +27,13 @@ body { padding-top: 60px; margin-bottom: 60px; }
       <attr sel="nav//ul/li/ul/li/a"
             th:classappend="'btn nav-link dropdown-item text-white bg-dark'"/>
     </attr>
-    <attr sel="main" th:classappend="'container'"/>
+    <attr sel="main" th:classappend="'container'">
+      <attr sel="/table" th:classappend="'table table-striped'">
+        <attr sel="/tbody">
+          <attr sel="/tr" th:classappend="'row'"/>
+        </attr>
+      </attr>
+    </attr>
     <attr sel="/footer" th:classappend="'fixed-bottom text-white bg-dark'">
       <attr sel="/nav" th:classappend="'container navbar navbar-dark'">
         <attr sel="/span[0]" th:classappend="'col-sm text-left'"/>
