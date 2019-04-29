@@ -7,8 +7,12 @@ package voyeur;
 
 import ball.spring.HTML5Template;
 import ball.ssdp.SSDPDiscoveryCache;
+import ball.ssdp.SSDPMessage;
 import java.net.NetworkInterface;
+import java.net.URI;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.apache.logging.log4j.LogManager;
@@ -18,6 +22,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
 
 /**
  * UI {@link Controller} implementation
@@ -42,7 +50,20 @@ public class UIController extends HTML5Template {
     @ModelAttribute("ssdp")
     public SSDPDiscoveryCache ssdp() { return cache; }
 
-    @RequestMapping(value = { "/", "/interfaces", "/ssdp" })
+    @ModelAttribute("upnp")
+    public Map<URI,List<URI>> upnp() {
+        Map<URI,List<URI>> map =
+            ssdp().values().stream()
+            .map(t -> t.getSSDPMessage())
+            .collect(groupingBy(SSDPMessage::getLocation,
+                                mapping(SSDPMessage::getUSN, toList())));
+
+        return map;
+    }
+
+    @RequestMapping(value = {
+                        "/", "/interfaces", "/upnp/devices", "/upnp/ssdp"
+                    })
     public String root(Model model) { return VIEW; }
 
     @RequestMapping(value = { "/index", "/index.htm", "/index.html" })

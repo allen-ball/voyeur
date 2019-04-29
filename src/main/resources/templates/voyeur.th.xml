@@ -28,9 +28,10 @@ body { padding-top: 60px; margin-bottom: 60px; }
             th:classappend="'btn nav-link dropdown-item text-white bg-dark'"/>
     </attr>
     <attr sel="main" th:classappend="'container'">
-      <attr sel="/table" th:classappend="'table table-striped'">
-        <attr sel="/tbody">
-          <attr sel="/tr" th:classappend="'row'"/>
+      <attr sel="table" th:classappend="'table table-striped'">
+        <attr sel="tbody">
+          <attr sel="tr" th:classappend="'row'"/>
+          <attr sel="tr/td" th:classappend="'col'"/>
         </attr>
       </attr>
     </attr>
