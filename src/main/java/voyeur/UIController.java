@@ -54,7 +54,7 @@ public class UIController extends HTML5Template {
     public Map<URI,List<URI>> upnp() {
         Map<URI,List<URI>> map =
             ssdp().values().stream()
-            .map(t -> t.getSSDPMessage())
+            .map(SSDPDiscoveryCache.Value::getSSDPMessage)
             .collect(groupingBy(SSDPMessage::getLocation,
                                 mapping(SSDPMessage::getUSN, toList())));
 
@@ -64,7 +64,7 @@ public class UIController extends HTML5Template {
     @RequestMapping(value = {
                         "/",
                         "/upnp/devices", "/upnp/ssdp",
-                        "/interfaces"
+                        "/network/interfaces"
                     })
     public String root(Model model) { return VIEW; }
 

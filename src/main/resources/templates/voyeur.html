@@ -16,21 +16,16 @@
             <li><a th:text="'SSDP'" th:href="@{/upnp/ssdp}"/></li>
           </ul>
         </li>
-        <li><a th:text="'Interfaces'" th:href="@{/interfaces}"/></li>
+        <li>
+          <button th:text="'Network'"/>
+          <ul>
+            <li><a th:text="'Interfaces'" th:href="@{/network/interfaces}"/></li>
+          </ul>
+        </li>
       </ul>
     </nav>
   </header>
   <main th:switch="${#request.servletPath}">
-    <table th:case="'/interfaces'">
-      <tbody>
-        <tr th:each="interface : ${interfaces}">
-          <td th:text="${interface.name}"/>
-          <!--/* <td th:text="${interface.up}"/> */-->
-          <!--/* <td th:text="${interface.hardwareAddress}"/> */-->
-          <td th:text="${interface.interfaceAddresses}"/>
-        </tr>
-      </tbody>
-    </table>
     <table th:case="'/upnp/devices'">
       <tbody>
         <tr th:each="entry : ${upnp.entrySet()}">
@@ -65,6 +60,16 @@
             </p>
             <p><pre th:text="*{toString().trim()}"/></p>
           </td>
+        </tr>
+      </tbody>
+    </table>
+    <table th:case="'/network/interfaces'">
+      <tbody>
+        <tr th:each="interface : ${interfaces}">
+          <td th:text="${interface.name}"/>
+          <!--/* <td th:text="${interface.up}"/> */-->
+          <!--/* <td th:text="${interface.hardwareAddress}"/> */-->
+          <td th:text="${interface.interfaceAddresses}"/>
         </tr>
       </tbody>
     </table>
