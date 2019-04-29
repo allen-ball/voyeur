@@ -62,7 +62,9 @@ public class UIController extends HTML5Template {
     }
 
     @RequestMapping(value = {
-                        "/", "/interfaces", "/upnp/devices", "/upnp/ssdp"
+                        "/",
+                        "/upnp/devices", "/upnp/ssdp",
+                        "/interfaces"
                     })
     public String root(Model model) { return VIEW; }
 
