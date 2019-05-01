@@ -10,9 +10,9 @@ import ball.ssdp.SSDPDiscoveryCache;
 import ball.ssdp.SSDPMessage;
 import java.net.NetworkInterface;
 import java.net.URI;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.apache.logging.log4j.LogManager;
@@ -41,14 +41,7 @@ public class UIController extends HTML5Template {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Autowired private SSDPDiscoveryCache cache;
-
-    @ModelAttribute("interfaces")
-    public Enumeration<NetworkInterface> interfaces() throws Exception {
-        return NetworkInterface.getNetworkInterfaces();
-    }
-
-    @ModelAttribute("ssdp")
-    public SSDPDiscoveryCache ssdp() { return cache; }
+    @Autowired private Set<NetworkInterface> interfaces;
 
     @ModelAttribute("upnp")
     public Map<URI,List<URI>> upnp() {
@@ -60,6 +53,12 @@ public class UIController extends HTML5Template {
 
         return map;
     }
+
+    @ModelAttribute("ssdp")
+    public SSDPDiscoveryCache ssdp() { return cache; }
+
+    @ModelAttribute("interfaces")
+    public Set<NetworkInterface> interfaces() { return interfaces; }
 
     @RequestMapping(value = {
                         "/",
