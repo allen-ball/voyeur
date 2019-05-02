@@ -6,8 +6,8 @@
 package voyeur;
 
 import ball.spring.HTML5Template;
-import ball.ssdp.SSDPDiscoveryCache;
-import ball.ssdp.SSDPMessage;
+import ball.upnp.ssdp.SSDPDiscoveryCache;
+import ball.upnp.ssdp.SSDPMessage;
 import java.net.NetworkInterface;
 import java.net.URI;
 import java.util.List;

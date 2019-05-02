@@ -51,7 +51,7 @@
     </dependency>
     <dependency>
       <groupId>ball</groupId>
-      <artifactId>ball-ssdp</artifactId>
+      <artifactId>ball-upnp</artifactId>
     </dependency>
     <dependency>
       <groupId>ball</groupId>

@@ -5,8 +5,8 @@
  */
 package voyeur;
 
-import ball.ssdp.SSDPDiscoveryCache;
-import ball.ssdp.SSDPDiscoveryThread;
+import ball.upnp.ssdp.SSDPDiscoveryCache;
+import ball.upnp.ssdp.SSDPDiscoveryThread;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import lombok.NoArgsConstructor;
@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * {@link ball.ssdp} {@link Component}
+ * {@link ball.upnp.ssdp} {@link Component}
  *
  * {@injected.fields}
  *

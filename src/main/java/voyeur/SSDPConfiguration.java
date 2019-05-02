@@ -5,8 +5,8 @@
  */
 package voyeur;
 
-import ball.ssdp.SSDPDiscoveryCache;
-import ball.ssdp.SSDPDiscoveryThread;
+import ball.upnp.ssdp.SSDPDiscoveryCache;
+import ball.upnp.ssdp.SSDPDiscoveryThread;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.apache.logging.log4j.LogManager;
@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * {@link ball.ssdp} {@link Configuration}
+ * {@link ball.upnp.ssdp} {@link Configuration}
  *
  * @author {@link.uri mailto:ball@hcf.dev Allen D. Ball}
  * @version $Revision$
