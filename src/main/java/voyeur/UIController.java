@@ -13,6 +13,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListMap;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.apache.logging.log4j.LogManager;
@@ -40,7 +41,7 @@ import static java.util.stream.Collectors.toList;
 public class UIController extends HTML5Template {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @Autowired private SSDPDiscoveryCache cache;
+    @Autowired private SSDPDiscoveryCache ssdp;
     @Autowired private Set<NetworkInterface> interfaces;
 
     @ModelAttribute("upnp")
@@ -49,13 +50,14 @@ public class UIController extends HTML5Template {
             ssdp().values().stream()
             .map(SSDPDiscoveryCache.Value::getSSDPMessage)
             .collect(groupingBy(SSDPMessage::getLocation,
+                                ConcurrentSkipListMap::new,
                                 mapping(SSDPMessage::getUSN, toList())));
 
         return map;
     }
 
     @ModelAttribute("ssdp")
-    public SSDPDiscoveryCache ssdp() { return cache; }
+    public SSDPDiscoveryCache ssdp() { return ssdp; }
 
     @ModelAttribute("interfaces")
     public Set<NetworkInterface> interfaces() { return interfaces; }
