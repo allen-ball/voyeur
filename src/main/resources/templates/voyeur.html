@@ -65,11 +65,25 @@
     </table>
     <table th:case="'/network/interfaces'">
       <tbody>
-        <tr th:each="interface : ${interfaces}">
-          <td th:text="${interface.name}"/>
-          <!--/* <td th:text="${interface.up}"/> */-->
-          <!--/* <td th:text="${interface.hardwareAddress}"/> */-->
-          <td th:text="${interface.interfaceAddresses}"/>
+        <tr th:each="netif : ${interfaces}">
+          <td>
+            <p><code th:text="${netif.name}"/></p>
+            <!--/* <p><code th:text="${netif.hardwareAddress}"/></p> */-->
+          </td>
+          <td>
+            <th:block th:each="address : ${netif.interfaceAddresses}">
+              <p th:if="${address.address.class.name != 'java.net.Inet6Address'}">
+                <code th:text="${address.address.hostAddress}"/>
+              </p>
+            </th:block>
+          </td>
+          <td>
+            <th:block th:each="address : ${netif.interfaceAddresses}">
+              <p th:if="${address.address.class.name == 'java.net.Inet6Address'}">
+                <code th:text="${address.address.hostAddress}"/>
+              </p>
+            </th:block>
+          </td>
         </tr>
       </tbody>
     </table>
