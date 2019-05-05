@@ -68,7 +68,7 @@
         <tr th:each="netif : ${interfaces}">
           <td>
             <p><code th:text="${netif.name}"/></p>
-            <!--/* <p><code th:text="${netif.hardwareAddress}"/></p> */-->
+            <p><code th:text="${#conversions.convert(netif, 'voyeur.types.HardwareAddress')}"/></p>
           </td>
           <td>
             <th:block th:each="address : ${netif.interfaceAddresses}">
