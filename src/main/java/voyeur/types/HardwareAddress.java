@@ -23,6 +23,8 @@ public class HardwareAddress {
      * {@link NetworkInterface} constructor.
      *
      * @param   netif           The {@link NetworkInterface}.
+     *
+     * @throws  SocketException If the hardware address canoot be read.
      */
     public HardwareAddress(NetworkInterface netif) throws SocketException {
         this(netif.getHardwareAddress());
