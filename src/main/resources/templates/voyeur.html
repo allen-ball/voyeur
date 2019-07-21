@@ -1,100 +1,133 @@
+<!DOCTYPE html>
 <!--/* $Id$ */-->
-<head>
-  <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}"/>
-  <style/>
-  <script th:src="@{/js/plugins.js}" th:text="''"/>
-</head>
-<body>
-  <header>
-    <nav th:with="brand = ${@environment.getProperty('application.brand')}">
-      <a th:text="${brand ?: 'Home'}" th:href="@{/}"/>
-      <ul>
-        <li>
-          <button th:text="'UPNP'"/>
-          <ul>
-            <li><a th:text="'Devices'" th:href="@{/upnp/devices}"/></li>
-            <li><a th:text="'SSDP'" th:href="@{/upnp/ssdp}"/></li>
-          </ul>
-        </li>
-        <li>
-          <button th:text="'Network'"/>
-          <ul>
-            <li><a th:text="'Interfaces'" th:href="@{/network/interfaces}"/></li>
-          </ul>
-        </li>
-      </ul>
-    </nav>
-  </header>
-  <main th:switch="${#request.servletPath}">
-    <table th:case="'/upnp/devices'">
-      <tbody>
-        <tr th:each="entry : ${upnp.entrySet()}">
-          <td>
-            <table>
-              <tbody>
-                <tr>
-                  <td>
-                    <a th:href="@{${entry.key}}" th:target="_newtab">
-                      <code th:text="${entry.key}"/>
+<html xmlns:th="http://www.thymeleaf.org" th:xmlns="@{http://www.w3.org/1999/xhtml}">
+  <head th:with="gaid = ${@environment.getProperty('gaid')}">
+    <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+    <title th:if="${title != null}" th:text="${title}"/>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"/>
+    <link rel="manifest" href="/site.webmanifest"/>
+    <link rel="icon" type="image/png" href="/favicon.png"/>
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}"/>
+    <style/>
+    <script th:src="@{/js/plugins.js}" th:text="''"/>
+    <th:block th:if="${gaid != null}" th:insert="~{google-adsense}"/>
+  </head>
+  <body th:with="gtid = ${@environment.getProperty('gtid')}">
+    <!--[if lte IE 9]>
+      <p class="browserupgrade" th:utext="#{browserupgrade}"/>
+    <![endif]-->
+    <header>
+      <nav th:with="brand = ${@environment.getProperty('application.brand')}">
+        <a th:text="${brand ?: 'Home'}" th:href="@{/}"/>
+        <ul>
+          <li>
+            <button th:text="'UPNP'"/>
+            <ul>
+              <li><a th:text="'Devices'" th:href="@{/upnp/devices}"/></li>
+              <li><a th:text="'SSDP'" th:href="@{/upnp/ssdp}"/></li>
+            </ul>
+          </li>
+          <li>
+            <button th:text="'Network'"/>
+            <ul>
+              <li><a th:text="'Interfaces'" th:href="@{/network/interfaces}"/></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <th:block th:unless="${#ctx.containsVariable('exception')}"
+              th:switch="${#request.servletPath}">
+      <div th:case="'/error'">
+        <section>
+          <h1 th:text="${#request.getAttribute('javax.servlet.error.request_uri')}"/>
+          <h2 th:text="${#request.getAttribute('javax.servlet.error.status_code')}"/>
+          <p th:text="${#request.getAttribute('javax.servlet.error.message')}"/>
+        </section>
+      </div>
+      <main th:case="*">
+        <main th:switch="${#request.servletPath}">
+          <table th:case="'/upnp/devices'">
+            <tbody>
+              <tr th:each="entry : ${upnp.entrySet()}">
+                <td>
+                  <table>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <a th:href="@{${entry.key}}" th:target="_newtab">
+                            <code th:text="${entry.key}"/>
+                          </a>
+                        </td>
+                      </tr>
+                      <tr th:each="usn : ${entry.value}">
+                        <td><code th:text="${usn}"/></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table th:case="'/upnp/ssdp'">
+            <tbody>
+              <tr th:each="entry : ${ssdp.entrySet()}">
+                <td th:object="${entry.value.SSDPMessage}">
+                  <p><code th:text="${entry.key}"/></p>
+                  <p th:with="href = @{*{location}}">
+                    <a th:href="${href}" th:target="_newtab">
+                      <code th:text="${href}"/>
                     </a>
-                  </td>
-                </tr>
-                <tr th:each="usn : ${entry.value}">
-                  <td><code th:text="${usn}"/></td>
-                </tr>
-              </tbody>
-            </table>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <table th:case="'/upnp/ssdp'">
-      <tbody>
-        <tr th:each="entry : ${ssdp.entrySet()}">
-          <td th:object="${entry.value.SSDPMessage}">
-            <p><code th:text="${entry.key}"/></p>
-            <p th:with="href = @{*{location}}">
-              <a th:href="${href}" th:target="_newtab">
-                <code th:text="${href}"/>
-              </a>
-            </p>
-            <p><pre th:text="*{toString().trim()}"/></p>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <table th:case="'/network/interfaces'">
-      <tbody>
-        <tr th:each="netif : ${interfaces}">
-          <td>
-            <p><code th:text="${netif.name}"/></p>
-            <p><code th:text="${#conversions.convert(netif, 'voyeur.types.HardwareAddress')}"/></p>
-          </td>
-          <td>
-            <th:block th:each="address : ${netif.interfaceAddresses}">
-              <p th:if="${address.address.class.name != 'java.net.Inet6Address'}">
-                <code th:text="${address.address.hostAddress}"/>
-              </p>
-            </th:block>
-          </td>
-          <td>
-            <th:block th:each="address : ${netif.interfaceAddresses}">
-              <p th:if="${address.address.class.name == 'java.net.Inet6Address'}">
-                <code th:text="${address.address.hostAddress}"/>
-              </p>
-            </th:block>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </main>
-  <footer>
-    <nav>
-      <span th:text="${#request.servletPath}"/>
-      <span th:text="''"/>
-      <span th:text="''"/>
-    </nav>
-  </footer>
-  <script th:src="@{/webjars/jquery/jquery.js}" th:text="''"/>
-  <script th:src="@{/webjars/bootstrap/js/bootstrap.js}" th:text="''"/>
-</body>
+                  </p>
+                  <p><pre th:text="*{toString().trim()}"/></p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table th:case="'/network/interfaces'">
+            <tbody>
+              <tr th:each="netif : ${interfaces}">
+                <td>
+                  <p><code th:text="${netif.name}"/></p>
+                  <p><code th:text="${#conversions.convert(netif, 'voyeur.types.HardwareAddress')}"/></p>
+                </td>
+                <td>
+                  <th:block th:each="address : ${netif.interfaceAddresses}">
+                    <p th:if="${address.address.class.name != 'java.net.Inet6Address'}">
+                      <code th:text="${address.address.hostAddress}"/>
+                    </p>
+                  </th:block>
+                </td>
+                <td>
+                  <th:block th:each="address : ${netif.interfaceAddresses}">
+                    <p th:if="${address.address.class.name == 'java.net.Inet6Address'}">
+                      <code th:text="${address.address.hostAddress}"/>
+                    </p>
+                  </th:block>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </main>
+      </main>
+    </th:block>
+    <div th:if="${#ctx.containsVariable('exception')}">
+      <section>
+        <h1 th:text="${#request.getAttribute('javax.servlet.error.request_uri')}"/>
+        <p th:text="${exception.message}"/>
+      </section>
+    </div>
+    <footer>
+      <nav>
+        <span th:text="${#request.servletPath}"/>
+        <span th:text="''"/>
+        <span th:text="''"/>
+      </nav>
+    </footer>
+    <script th:src="@{/webjars/jquery/jquery.js}" th:text="''"/>
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.js}" th:text="''"/>
+    <th:block th:if="${gtid != null}" th:insert="~{google-analytics}"/>
+  </body>
+</html>

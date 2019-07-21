@@ -5,7 +5,7 @@
  */
 package voyeur;
 
-import ball.spring.HTML5Template;
+import ball.spring.HTML5Controller;
 import ball.upnp.ssdp.SSDPDiscoveryCache;
 import ball.upnp.ssdp.SSDPMessage;
 import java.net.NetworkInterface;
@@ -38,7 +38,7 @@ import static java.util.stream.Collectors.toList;
  */
 @Controller
 @NoArgsConstructor @ToString
-public class UIController extends HTML5Template {
+public class UIController extends HTML5Controller {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Autowired private SSDPDiscoveryCache ssdp;
@@ -67,7 +67,7 @@ public class UIController extends HTML5Template {
                         "/upnp/devices", "/upnp/ssdp",
                         "/network/interfaces"
                     })
-    public String root(Model model) { return VIEW; }
+    public String root(Model model) { return template(); }
 
     @RequestMapping(value = { "/index", "/index.htm", "/index.html" })
     public String index() { return "redirect:/"; }
