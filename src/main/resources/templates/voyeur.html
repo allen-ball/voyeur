@@ -4,20 +4,15 @@
   <head th:with="gaid = ${@environment.getProperty('gaid')}">
     <meta http-equiv="x-ua-compatible" content="ie=edge"/>
     <title th:if="${title != null}" th:text="${title}"/>
-    <meta name="description" content=""/>
+    <meta th:if="${description != null}" name="description" th:content="${description}"/>
     <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"/>
-    <link rel="manifest" href="/site.webmanifest"/>
-    <link rel="icon" type="image/png" href="/favicon.png"/>
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.css}"/>
+    <link rel="stylesheet"/>
     <style/>
-    <script th:src="@{/js/plugins.js}" th:text="''"/>
+    <script/>
     <th:block th:if="${gaid != null}" th:insert="~{google-adsense}"/>
   </head>
   <body th:with="gtid = ${@environment.getProperty('gtid')}">
-    <!--[if lte IE 9]>
-      <p class="browserupgrade" th:utext="#{browserupgrade}"/>
-    <![endif]-->
+    <th:block th:insert="~{browserupgrade}"/>
     <header>
       <nav th:with="brand = ${@environment.getProperty('application.brand')}">
         <a th:text="${brand ?: 'Home'}" th:href="@{/}"/>
@@ -126,8 +121,7 @@
         <span th:text="''"/>
       </nav>
     </footer>
-    <script th:src="@{/webjars/jquery/jquery.js}" th:text="''"/>
-    <script th:src="@{/webjars/bootstrap/js/bootstrap.js}" th:text="''"/>
+    <script/>
     <th:block th:if="${gtid != null}" th:insert="~{google-analytics}"/>
   </body>
 </html>

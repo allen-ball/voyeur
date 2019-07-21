@@ -2,10 +2,22 @@
 <!-- $Id$ -->
 <thlogic>
   <attr sel="head">
-    <attr sel="style[0]" th:text="'
+    <attr sel="link"
+          th:each="css :
+                     ${new String[] {
+                         '/webjars/bootstrap/css/bootstrap.css'
+                       }}"
+          th:href="@{${css}}"/>
+    <attr sel="style" th:text="'
 body { padding-top: 60px; margin-bottom: 60px; }
 @media (max-width: 979px) { body { padding-top: 0px; } }
 '"/>
+    <attr sel="script"
+          th:each="script :
+                     ${new String[] {
+                         '/js/plugins.js'
+                       }}"
+          th:src="@{${script}}" th:text="''"/>
   </attr>
   <attr sel="body">
     <attr sel="/header"
@@ -43,5 +55,12 @@ body { padding-top: 60px; margin-bottom: 60px; }
       </attr>
       <attr sel="nav//a" th:classappend="'btn btn-link'"/>
     </attr>
+    <attr sel="script"
+          th:each="script :
+                     ${new String[] {
+                         '/webjars/jquery/jquery.js',
+                         '/webjars/bootstrap/js/bootstrap.js'
+                       }}"
+          th:src="@{${script}}" th:text="''"/>
   </attr>
 </thlogic>
