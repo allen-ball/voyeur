@@ -41,8 +41,8 @@ import static java.util.stream.Collectors.toList;
 public class UIController extends HTML5Controller {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    @Autowired private SSDPDiscoveryCache ssdp;
-    @Autowired private Set<NetworkInterface> interfaces;
+    @Autowired private SSDPDiscoveryCache ssdp = null;
+    @Autowired private Set<NetworkInterface> interfaces = null;
 
     @ModelAttribute("upnp")
     public Map<URI,List<URI>> upnp() {

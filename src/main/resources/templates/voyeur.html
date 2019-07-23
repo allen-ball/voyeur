@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"/>
     <link rel="stylesheet"/>
     <style/>
-    <script/>
     <th:block th:if="${gaid != null}" th:insert="~{google-adsense}"/>
   </head>
   <body th:with="gtid = ${@environment.getProperty('gtid')}">
@@ -42,7 +41,7 @@
           <p th:text="${#request.getAttribute('javax.servlet.error.message')}"/>
         </section>
       </div>
-      <main th:case="*">
+      <th:block th:case="*">
         <main th:switch="${#request.servletPath}">
           <table th:case="'/upnp/devices'">
             <tbody>
@@ -106,7 +105,7 @@
             </tbody>
           </table>
         </main>
-      </main>
+      </th:block>
     </th:block>
     <div th:if="${#ctx.containsVariable('exception')}">
       <section>
