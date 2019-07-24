@@ -67,7 +67,7 @@ public class UIController extends HTML5Controller {
                         "/upnp/devices", "/upnp/ssdp",
                         "/network/interfaces"
                     })
-    public String root(Model model) { return view(); }
+    public String root(Model model) { return getViewName(); }
 
     @RequestMapping(value = { "/index", "/index.htm", "/index.html" })
     public String index() { return "redirect:/"; }
