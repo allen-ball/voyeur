@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--/* $Id$ */-->
 <html xmlns:th="http://www.thymeleaf.org" th:xmlns="@{http://www.w3.org/1999/xhtml}">
-  <head th:with="gaid = ${@environment.getProperty('gaid')}">
+  <head>
     <meta charset="UTF-8"/>
     <title th:if="${title != null}" th:text="${title}"/>
     <meta th:if="${description != null}" name="description" th:content="${description}"/>
@@ -10,10 +10,10 @@
     <style/>
     <th:block th:if="${gaid != null}" th:insert="~{google-adsense}"/>
   </head>
-  <body th:with="gtid = ${@environment.getProperty('gtid')}">
+  <body>
     <th:block th:insert="~{browserupgrade}"/>
     <header>
-      <nav th:with="brand = ${@environment.getProperty('application.brand')}">
+      <nav>
         <a th:text="${brand ?: 'Home'}" th:href="@{/}"/>
         <ul>
           <li>
