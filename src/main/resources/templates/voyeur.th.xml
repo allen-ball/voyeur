@@ -3,7 +3,8 @@
 <thlogic>
   <attr sel="head">
     <attr sel="link[rel='stylesheet']"
-          th:each="href : ${stylesheets}" th:href="@{${href}}"/>
+          th:each="href : ${#strings.listSplit(stylesheets, ',')}"
+          th:href="@{${#strings.trim(href)}}"/>
     <attr sel="style" th:if="${style != null}" th:text="${style}"/>
   </attr>
   <attr sel="body">
@@ -43,6 +44,7 @@
       <attr sel="nav//a" th:classappend="'btn btn-link'"/>
     </attr>
     <attr sel="script"
-          th:each="src : ${scripts}" th:src="@{${src}}" th:text="''"/>
+          th:each="src : ${#strings.listSplit(scripts, ',')}"
+          th:src="@{${#strings.trim(src)}}" th:text="''"/>
   </attr>
 </thlogic>
