@@ -5,7 +5,7 @@
  */
 package voyeur;
 
-import ball.spring.HTML5Controller;
+import ball.spring.AbstractController;
 import ball.upnp.ssdp.SSDPDiscoveryCache;
 import ball.upnp.ssdp.SSDPMessage;
 import java.net.NetworkInterface;
@@ -38,7 +38,7 @@ import static java.util.stream.Collectors.toList;
  */
 @Controller
 @NoArgsConstructor @ToString
-public class UIController extends HTML5Controller {
+public class UIController extends AbstractController {
     private static final Logger LOGGER = LogManager.getLogger();
 
     @Autowired private SSDPDiscoveryCache ssdp = null;
@@ -47,7 +47,8 @@ public class UIController extends HTML5Controller {
     @ModelAttribute("upnp")
     public Map<URI,List<URI>> upnp() {
         Map<URI,List<URI>> map =
-            ssdp().values().stream()
+            ssdp().values()
+            .stream()
             .map(SSDPDiscoveryCache.Value::getSSDPMessage)
             .collect(groupingBy(SSDPMessage::getLocation,
                                 ConcurrentSkipListMap::new,
