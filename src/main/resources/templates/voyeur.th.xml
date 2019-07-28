@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- $Id$ -->
 <thlogic>
-  <attr sel="html"
-        th:with="brand = ${@environment.getProperty('application.brand')},
-                 gaid = ${@environment.getProperty('gaid')},
-                 gtid = ${@environment.getProperty('gtid')}"/>
   <attr sel="head">
     <attr sel="link[rel='stylesheet']"
           th:each="href : ${#strings.listSplit(stylesheets, ',')}"

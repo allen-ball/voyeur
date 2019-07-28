@@ -8,13 +8,13 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"/>
     <link rel="stylesheet"/>
     <style/>
-    <th:block th:if="${gaid != null}" th:insert="~{google-adsense}"/>
+    <th:block th:if="${! #strings.isEmpty(gaid)}" th:insert="~{google-adsense}"/>
   </head>
   <body>
     <th:block th:insert="~{browserupgrade}"/>
     <header>
       <nav>
-        <a th:text="${brand ?: 'Home'}" th:href="@{/}"/>
+        <a th:text="${#strings.defaultString(brand, 'Home')}" th:href="@{/}"/>
         <ul>
           <li>
             <button th:text="'UPNP'"/>
@@ -121,6 +121,6 @@
       </nav>
     </footer>
     <script/>
-    <th:block th:if="${gtid != null}" th:insert="~{google-analytics}"/>
+    <th:block th:if="${! #strings.isEmpty(gtid)}" th:insert="~{google-analytics}"/>
   </body>
 </html>
