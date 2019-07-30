@@ -17,12 +17,12 @@
       <attr sel="nav/ul/li/a" th:classappend="'btn nav-link'"/>
       <attr sel="nav//ul/li/button"
             th:classappend="'btn dropdown-toggle text-white bg-dark'"
-            th:id="${#ids.seq('dropdown')}"
             th:data-toggle="'dropdown'"
-            th:aria-haspopup="true" th:aria-expanded="false"/>
+            th:aria-controls="${#ids.next('dropdown')}"
+            th:aria-haspopup="true"/>
       <attr sel="nav//ul/li/ul"
-            th:classappend="'dropdown-menu text-white bg-dark'"
-            th:aria-labelledby="${#ids.prev('dropdown')}"/>
+            th:id="${#ids.seq('dropdown')}"
+            th:classappend="'dropdown-menu text-white bg-dark'"/>
       <attr sel="nav//ul/li/ul/li" th:classappend="'nav-item dropdown'"/>
       <attr sel="nav//ul/li/ul/li/a"
             th:classappend="'btn nav-link dropdown-item text-white bg-dark'"/>
