@@ -121,9 +121,11 @@
     </main>
     <footer>
       <nav th:ref="navbar">
-        <span th:ref="left" th:text="${#request.servletPath}"/>
-        <span th:ref="center" th:text="''"/>
-        <span th:ref="right" th:text="''"/>
+        <div th:ref="container">
+          <span th:ref="left" th:text="${#request.servletPath}"/>
+          <span th:ref="center" th:text="''"/>
+          <span th:ref="right" th:text="''"/>
+        </div>
       </nav>
     </footer>
     <script/>

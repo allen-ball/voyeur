@@ -46,7 +46,8 @@
       </attr>
     </attr>
     <attr sel="footer" th:class="'fixed-bottom text-white bg-dark'">
-      <attr sel="%navbar" th:class="'container navbar navbar-dark'">
+      <attr sel="%navbar" th:class="'navbar navbar-dark'">
+        <attr sel="div%container" th:class="'container'"/>
         <attr sel="%left" th:class="'col-sm text-left'"/>
         <attr sel="%center" th:class="'col-sm-3 text-center'"/>
         <attr sel="%right" th:class="'col-sm text-right'"/>
