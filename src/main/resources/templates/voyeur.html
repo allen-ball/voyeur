@@ -8,28 +8,34 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no"/>
     <link rel="stylesheet"/>
     <style/>
-    <th:block th:if="${! #strings.isEmpty(gaid)}" th:insert="~{google-adsense}"/>
   </head>
   <body>
     <th:block th:insert="~{browserupgrade}"/>
     <header>
-      <nav>
-        <a th:text="${#strings.defaultString(brand, 'Home')}" th:href="@{/}"/>
-        <ul>
-          <li>
-            <button th:text="'UPNP'"/>
-            <ul>
-              <li><a th:text="'Devices'" th:href="@{/upnp/devices}"/></li>
-              <li><a th:text="'SSDP'" th:href="@{/upnp/ssdp}"/></li>
+      <nav th:ref="navbar">
+        <th:block th:ref="container">
+          <div th:ref="navbar-brand">
+            <a th:text="${#strings.defaultString(brand, 'Home')}" th:href="@{/}"/>
+          </div>
+          <div th:ref="navbar-menu">
+            <ul th:ref="navbar-start"></ul>
+            <ul th:ref="navbar-end">
+              <li th:ref="navbar-item">
+                <button th:text="'UPNP'"/>
+                <ul th:ref="navbar-dropdown">
+                  <li><a th:text="'Devices'" th:href="@{/upnp/devices}"/></li>
+                  <li><a th:text="'SSDP'" th:href="@{/upnp/ssdp}"/></li>
+                </ul>
+              </li>
+              <li th:ref="navbar-item">
+                <button th:text="'Network'"/>
+                <ul th:ref="navbar-dropdown">
+                  <li><a th:text="'Interfaces'" th:href="@{/network/interfaces}"/></li>
+                </ul>
+              </li>
             </ul>
-          </li>
-          <li>
-            <button th:text="'Network'"/>
-            <ul>
-              <li><a th:text="'Interfaces'" th:href="@{/network/interfaces}"/></li>
-            </ul>
-          </li>
-        </ul>
+          </div>
+        </th:block>
       </nav>
     </header>
     <main th:unless="${#ctx.containsVariable('exception')}"
@@ -114,13 +120,12 @@
       </section>
     </main>
     <footer>
-      <nav>
-        <span th:text="${#request.servletPath}"/>
-        <span th:text="''"/>
-        <span th:text="''"/>
+      <nav th:ref="navbar">
+        <span th:ref="left" th:text="${#request.servletPath}"/>
+        <span th:ref="center" th:text="''"/>
+        <span th:ref="right" th:text="''"/>
       </nav>
     </footer>
     <script/>
-    <th:block th:if="${! #strings.isEmpty(gtid)}" th:insert="~{google-analytics}"/>
   </body>
 </html>

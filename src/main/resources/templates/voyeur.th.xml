@@ -8,40 +8,51 @@
     <attr sel="style" th:if="${style != null}" th:text="${style}"/>
   </attr>
   <attr sel="body">
-    <attr sel="/header"
-          th:classappend="'fixed-top text-white bg-dark navbar navbar-dark'">
-      <attr sel="/nav" th:classappend="'container navbar-expand-md'"/>
-      <attr sel="nav/a[0]" th:classappend="'navbar-brand'"/>
-      <attr sel="nav/ul" th:classappend="'navbar-nav text-white bg-dark'"/>
-      <attr sel="nav/ul/li" th:classappend="'navbar-item dropdown'"/>
-      <attr sel="nav/ul/li/a" th:classappend="'btn nav-link'"/>
-      <attr sel="nav//ul/li/button"
-            th:classappend="'btn dropdown-toggle text-white bg-dark'"
-            th:data-toggle="'dropdown'"
-            th:aria-controls="${#ids.next('dropdown')}"
-            th:aria-haspopup="true"/>
-      <attr sel="nav//ul/li/ul"
-            th:id="${#ids.seq('dropdown')}"
-            th:classappend="'dropdown-menu text-white bg-dark'"/>
-      <attr sel="nav//ul/li/ul/li" th:classappend="'nav-item dropdown'"/>
-      <attr sel="nav//ul/li/ul/li/a"
-            th:classappend="'btn nav-link dropdown-item text-white bg-dark'"/>
-    </attr>
-    <attr sel="main" th:classappend="'container'">
-      <attr sel="table" th:classappend="'table table-striped'">
-        <attr sel="tbody">
-          <attr sel="tr" th:classappend="'row'"/>
-          <attr sel="tr/td" th:classappend="'col'"/>
+    <attr sel="header"
+          th:class="'fixed-top text-white bg-dark navbar navbar-dark'">
+      <attr sel="%navbar" th:class="'container navbar-expand-md'">
+        <attr sel="%navbar-brand//a" th:class="'navbar-brand'"/>
+        <attr sel="%navbar-menu">
+          <attr sel="%navbar-start" th:if="${false}"/>
+          <attr sel="%navbar-end"
+                th:class="'navbar-nav text-white bg-dark'"/>
+          <attr sel="%navbar-item" th:class="'navbar-item dropdown'"/>
+          <attr sel="%navbar-item/a" th:class="'btn navbar-link'"/>
+          <attr sel="%navbar-item/button"
+                th:class="'btn dropdown-toggle'"
+                th:data-toggle="'dropdown'"
+                th:aria-controls="${#ids.next('dropdown')}"
+                th:aria-haspopup="true"/>
+          <attr sel="%navbar-dropdown"
+                th:id="${#ids.seq('dropdown')}"
+                th:class="'dropdown-menu'"/>
+          <attr sel="%navbar-item/%navbar-dropdown/li"
+                th:class="'nav-item dropdown'"/>
+          <attr sel="%navbar-item/%navbar-dropdown/li/a"
+                th:class="'btn dropdown-link dropdown-item'"/>
+
+          <attr sel="a" th:classappend="'text-white bg-dark'"/>
+          <attr sel="button" th:classappend="'text-white bg-dark'"/>
+          <attr sel="%navbar-dropdown" th:classappend="'text-white bg-dark'"/>
         </attr>
       </attr>
     </attr>
-    <attr sel="/footer" th:classappend="'fixed-bottom text-white bg-dark'">
-      <attr sel="/nav" th:classappend="'container navbar navbar-dark'">
-        <attr sel="/span[0]" th:classappend="'col-sm text-left'"/>
-        <attr sel="/span[1]" th:classappend="'col-sm-3 text-center'"/>
-        <attr sel="/span[2]" th:classappend="'col-sm text-right'"/>
+    <attr sel="main" th:class="'container'">
+      <attr sel="table" th:class="'table table-striped'">
+        <attr sel="tbody">
+          <attr sel="tr" th:class="'row'"/>
+          <attr sel="tr/td" th:class="'col'"/>
+        </attr>
       </attr>
-      <attr sel="nav//a" th:classappend="'btn btn-link'"/>
+    </attr>
+    <attr sel="footer" th:class="'fixed-bottom text-white bg-dark'">
+      <attr sel="%navbar" th:class="'container navbar navbar-dark'">
+        <attr sel="%left" th:class="'col-sm text-left'"/>
+        <attr sel="%center" th:class="'col-sm-3 text-center'"/>
+        <attr sel="%right" th:class="'col-sm text-right'"/>
+
+        <attr sel="a" th:class="'btn btn-link'"/>
+      </attr>
     </attr>
     <attr sel="script"
           th:each="src : ${#strings.listSplit(scripts, ',')}"
