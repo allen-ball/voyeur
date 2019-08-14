@@ -16,8 +16,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListMap;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,10 +37,8 @@ import static java.util.stream.Collectors.toList;
  * @version $Revision$
  */
 @Controller
-@NoArgsConstructor @ToString
+@NoArgsConstructor @ToString @Log4j2
 public class UIController extends AbstractController {
-    private static final Logger LOGGER = LogManager.getLogger();
-
     @Autowired private SSDPDiscoveryCache ssdp = null;
     @Autowired private Set<NetworkInterface> interfaces = null;
 

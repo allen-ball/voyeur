@@ -9,8 +9,8 @@ import ball.upnp.ssdp.SSDPDiscoveryCache;
 import ball.upnp.ssdp.SSDPDiscoveryThread;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -21,10 +21,8 @@ import org.springframework.context.annotation.Configuration;
  * @version $Revision$
  */
 @Configuration
-@NoArgsConstructor @ToString
+@NoArgsConstructor @ToString @Log4j2
 public class SSDPConfiguration {
-    private static final Logger LOGGER = LogManager.getLogger();
-
     @Bean
     public SSDPDiscoveryCache cache() { return new SSDPDiscoveryCache(); }
 

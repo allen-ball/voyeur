@@ -7,8 +7,8 @@ package voyeur;
 
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
@@ -23,10 +23,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
  */
 @Configuration
 @EnableScheduling
-@NoArgsConstructor @ToString
+@NoArgsConstructor @ToString @Log4j2
 public class TaskSchedulerConfiguration {
-    private static final Logger LOGGER = LogManager.getLogger();
-
     @Bean
     public TaskScheduler scheduler() {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
