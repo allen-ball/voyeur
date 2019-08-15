@@ -25,8 +25,8 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 public class Launcher extends SpringBootServletInitializer {
 
     /**
-     * Standard {@link SpringApplication} {@code main(String[])} entry
-     * point.
+     * Standard {@link SpringApplication} {@code main(String[])}
+     * entry point.
      *
      * @param   argv            The command line argument vector.
      *
