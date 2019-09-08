@@ -15,13 +15,15 @@ import lombok.ToString;
 import lombok.extern.java.Log;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import static java.util.Collections.list;
 
 /**
- * Network {@link Component}
+ * Network interface {@link Component}
  *
  * {@injected.fields}
  *
@@ -31,11 +33,12 @@ import static java.util.Collections.list;
 @Component
 @NoArgsConstructor @ToString @Log4j2
 public class NetworkInterfaceComponent {
-    @Autowired private Set<NetworkInterface> interfaces;
+    @Autowired private Set<NetworkInterface> interfaces = null;
 
     @PostConstruct
     public void init() { }
 
+    @EventListener(ApplicationReadyEvent.class)
     @Scheduled(fixedDelay = 60 * 1000)
     public void interfaces() throws Exception {
         List<NetworkInterface> list =
