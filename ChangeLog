@@ -1,5 +1,9 @@
 2019-09-08  Allen D. Ball  <ball@sol.local>
 
+	* src/main/java/voyeur/NetworkMapperComponent.java,
+	src/main/java/voyeur/NetworkMapperConfiguration.java:
+	Initial writing: Provide and maintain NetworkMap.
+
 	* src/main/java/voyeur/NetworkMap.java: Initial writing.
 
 2019-07-29  Allen D. Ball  <ball@sol.local>
