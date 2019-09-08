@@ -24,12 +24,26 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @NoArgsConstructor @ToString @Log4j2
-public class NetworkConfiguration {
+public class NetworkInterfaceConfiguration {
     @Bean
     public Set<NetworkInterface> interfaces() {
         Comparator<NetworkInterface> comparator =
-            Comparator.comparing(NetworkInterface::getName);
+            Comparator
+            .<NetworkInterface>comparingInt(t -> isLoopback(t) ? -1 : 1)
+            .thenComparing(t -> t.getName().replaceAll("[0-9]", ""))
+            .thenComparingInt(t -> t.getIndex());
 
         return new ConcurrentSkipListSet<>(comparator);
+    }
+
+    private static boolean isLoopback(NetworkInterface ni) {
+        boolean isLoopback = false;
+
+        try {
+            isLoopback = ni.isLoopback();
+        } catch (Exception exception) {
+        }
+
+        return isLoopback;
     }
 }

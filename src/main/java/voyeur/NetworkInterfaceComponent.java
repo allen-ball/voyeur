@@ -30,7 +30,7 @@ import static java.util.Collections.list;
  */
 @Component
 @NoArgsConstructor @ToString @Log4j2
-public class NetworkComponent {
+public class NetworkInterfaceComponent {
     @Autowired private Set<NetworkInterface> interfaces;
 
     @PostConstruct
