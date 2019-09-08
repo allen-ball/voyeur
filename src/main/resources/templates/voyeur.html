@@ -31,6 +31,7 @@
                 <button th:text="'Network'"/>
                 <ul th:ref="navbar-dropdown">
                   <li><a th:text="'Interfaces'" th:href="@{/network/interfaces}"/></li>
+                  <li><a th:text="'Hosts'" th:href="@{/network/hosts}"/></li>
                 </ul>
               </li>
             </ul>
@@ -107,6 +108,17 @@
                     <code th:text="${address.address.hostAddress}"/>
                   </p>
                 </th:block>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <section th:case="'/network/hosts'">
+        <table>
+          <tbody>
+            <tr th:each="address : ${hosts}">
+              <td>
+                <code th:text="${address.hostAddress}"/>
               </td>
             </tr>
           </tbody>

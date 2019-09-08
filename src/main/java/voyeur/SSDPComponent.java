@@ -27,8 +27,8 @@ import org.springframework.stereotype.Component;
 @Component
 @NoArgsConstructor @ToString @Log4j2
 public class SSDPComponent {
-    @Autowired private SSDPDiscoveryCache cache;
-    @Autowired private SSDPDiscoveryThread thread;
+    @Autowired private SSDPDiscoveryCache cache = null;
+    @Autowired private SSDPDiscoveryThread thread = null;
 
     @PostConstruct
     public void init() {

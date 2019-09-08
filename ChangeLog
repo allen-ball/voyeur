@@ -1,5 +1,7 @@
 2019-09-08  Allen D. Ball  <ball@sol.local>
 
+	* Added "Hosts" menu item.
+
 	* src/main/java/voyeur/NetworkMapperComponent.java,
 	src/main/java/voyeur/NetworkMapperConfiguration.java:
 	Initial writing: Provide and maintain NetworkMap.
