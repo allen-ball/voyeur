@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import lombok.extern.java.Log;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
