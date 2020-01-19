@@ -1,13 +1,14 @@
 /*
  * $Id$
  *
- * Copyright 2019 Allen D. Ball.  All rights reserved.
+ * Copyright 2019, 2020 Allen D. Ball.  All rights reserved.
  */
 package voyeur;
 
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
@@ -43,6 +44,6 @@ public class NetworkMap extends ConcurrentSkipListMap<InetAddress,Long> {
     public boolean add(InetAddress key) {
         Long value = System.currentTimeMillis();
 
-        return put(key, value) != value;
+        return Objects.equals(put(key, value), value);
     }
 }

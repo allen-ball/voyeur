@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright 2019 Allen D. Ball.  All rights reserved.
+ * Copyright 2019, 2020 Allen D. Ball.  All rights reserved.
  */
 package voyeur;
 
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 import static java.util.Collections.list;
 
 /**
- * Network mapper {@link Component}
+ * Network mapper {@link Component}.
  *
  * {@injected.fields}
  *

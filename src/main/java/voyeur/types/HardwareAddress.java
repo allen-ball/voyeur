@@ -1,7 +1,7 @@
 /*
  * $Id$
  *
- * Copyright 2019 Allen D. Ball.  All rights reserved.
+ * Copyright 2019, 2020 Allen D. Ball.  All rights reserved.
  */
 package voyeur.types;
 
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 /**
- * Hardware Address
+ * Hardware Address.
  *
  * @author {@link.uri mailto:ball@hcf.dev Allen D. Ball}
  * @version $Revision$

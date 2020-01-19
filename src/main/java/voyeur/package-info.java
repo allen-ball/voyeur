@@ -4,7 +4,7 @@
  * Copyright 2019, 2020 Allen D. Ball.  All rights reserved.
  */
 /**
- * Local Area Network Voyeur Application
+ * Local Area Network Voyeur Application.
  *
  * {@pom.coordinates}
  *
