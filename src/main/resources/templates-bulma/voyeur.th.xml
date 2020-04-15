@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id$ -->
+<thlogic>
+  <attr sel="head">
+    <attr sel="link[rel='stylesheet']"
+          th:each="href : ${#strings.listSplit(stylesheets, ',')}"
+          th:href="@{${#strings.trim(href)}}"/>
+    <attr sel="style" th:if="${style != null}" th:text="${style}"/>
+  </attr>
+  <attr sel="body"
+        th:class="'container has-navbar-fixed-top has-navbar-fixed-bottom'">
+    <attr sel="header">
+      <attr sel="%navbar" th:class="'navbar is-fixed-top is-black'">
+        <attr sel="%container" th:class="'container'"/>
+        <attr sel="%navbar-brand" th:class="'navbar-brand'">
+          <attr sel="a" th:class="'navbar-item'"/>
+        </attr>
+        <attr sel="%navbar-menu" th:class="'navbar-menu is-active'">
+          <attr sel="%navbar-start" th:class="navbar-start"/>
+          <attr sel="%navbar-end" th:class="'navbar-end'"/>
+          <attr sel="%navbar-item"
+                th:classappend="'has-dropdown is-hoverable'">
+            <attr sel="/a"
+                  th:class="'navbar-link'"
+                  th:data-toggle="'dropdown'"
+                  th:aria-controls="${#ids.next('dropdown')}"
+                  th:aria-haspopup="true"/>
+            <attr sel="/ul"
+                  th:class="'navbar-dropdown has-text-white has-background-black'"
+                  th:id="${#ids.seq('dropdown')}"/>
+          </attr>
+        </attr>
+        <attr sel="%navbar-item" th:class="'navbar-item'"/>
+      </attr>
+    </attr>
+    <attr sel="main" th:class="'container'">
+      <attr sel="/table" th:class="'table is-fullwidth is-striped'"/>
+    </attr>
+    <attr sel="footer" th:class="'footer'">
+      <attr sel="%navbar" th:class="'navbar is-fixed-bottom is-black'">
+        <attr sel="%container" th:class="'container'"/>
+        <attr sel="%left" th:class="'col-sm text-left'"/>
+        <attr sel="%center" th:class="'col-sm-3 text-center'"/>
+        <attr sel="%right" th:class="'col-sm text-right'"/>
+
+        <attr sel="a" th:class="'navbar-link'"/>
+      </attr>
+    </attr>
+    <attr sel="script"
+          th:each="src : ${#strings.listSplit(scripts, ',')}"
+          th:src="@{${#strings.trim(src)}}" th:text="''"/>
+  </attr>
+</thlogic>
