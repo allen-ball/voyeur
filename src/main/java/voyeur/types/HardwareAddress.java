@@ -23,7 +23,9 @@ package voyeur.types;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.joining;
 
 /**
  * Hardware Address.
@@ -46,6 +48,17 @@ public class HardwareAddress {
     }
 
     /**
+     * {@link String} constructor.
+     *
+     * @param   string          The {@link String} representation.
+     */
+    public HardwareAddress(String string) {
+        Stream.of(string.split("[:]"))
+            .map(t -> Byte.valueOf(t, 16))
+            .forEach(t -> list.add(t));
+    }
+
+    /**
      * {@code byte} array constructor.
      *
      * @param   bytes           The {@code byte} array representing the
@@ -64,7 +77,7 @@ public class HardwareAddress {
         String string =
             list.stream()
             .map(t -> String.format("%02x", t))
-            .collect(Collectors.joining(":"));
+            .collect(joining(":"));
 
         return string;
     }
