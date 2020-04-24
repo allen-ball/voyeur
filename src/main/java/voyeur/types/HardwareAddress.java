@@ -54,8 +54,9 @@ public class HardwareAddress {
      */
     public HardwareAddress(String string) {
         Stream.of(string.split("[:]"))
-            .map(t -> Byte.valueOf(t, 16))
-            .forEach(t -> list.add(t));
+            .map(t -> Integer.valueOf(t, 16))
+            .map(t -> t & 0xFF)
+            .forEach(t -> list.add(t.byteValue()));
     }
 
     /**

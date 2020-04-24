@@ -56,6 +56,7 @@ import static java.util.stream.Collectors.toList;
 public class UIController extends AbstractController {
     @Autowired private SSDPDiscoveryCache ssdp = null;
     @Autowired private Set<NetworkInterface> interfaces = null;
+    @Autowired private ARPCache arp = null;
     @Autowired private NetworkMap map = null;
 
     @ModelAttribute("upnp")
@@ -77,13 +78,16 @@ public class UIController extends AbstractController {
     @ModelAttribute("interfaces")
     public Set<NetworkInterface> interfaces() { return interfaces; }
 
+    @ModelAttribute("arp")
+    public ARPCache arp() { return arp; }
+
     @ModelAttribute("hosts")
     public Set<InetAddress> hosts() { return map.keySet(); }
 
     @RequestMapping(value = {
                         "/",
                         "/upnp/devices", "/upnp/ssdp",
-                        "/network/interfaces", "/network/hosts"
+                        "/network/interfaces", "/network/arp", "/network/hosts"
                     })
     public String root(Model model) { return getViewName(); }
 
