@@ -20,21 +20,29 @@ package voyeur;
  * limitations under the License.
  * ##########################################################################
  */
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import java.math.BigInteger;
+import java.net.InetAddress;
+import java.util.Comparator;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
- * Network mapper {@link Configuration}.
+ * {@link InetAddress} {@link java.util.Map} abstract base class.
  *
  * @author {@link.uri mailto:ball@hcf.dev Allen D. Ball}
  * @version $Revision$
  */
-@Configuration
-@NoArgsConstructor @ToString @Log4j2
-public class NetworkMapperConfiguration {
-    @Bean
-    public NetworkMap networkMap() { return new NetworkMap(); }
+public abstract class InetAddressMap<V>
+                extends ConcurrentSkipListMap<InetAddress,V> {
+    private static final long serialVersionUID = 4096581096396052201L;
+
+    private static final Comparator<InetAddress> COMPARATOR =
+        Comparator
+        .<InetAddress>comparingInt(t -> t.getAddress().length)
+        .thenComparingInt(t -> t.isLoopbackAddress() ? -1 : 1)
+        .thenComparing(t -> new BigInteger(1, t.getAddress()));
+
+    /**
+     * Sole constructor.
+     */
+    protected InetAddressMap() { super(COMPARATOR); }
 }

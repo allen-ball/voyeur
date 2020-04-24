@@ -1,3 +1,8 @@
+2020-04-24  Allen D. Ball  <ball@hcf.dev>
+
+	* src/main/java/voyeur/InetAddressMap.java:
+	Re-factored as a @Service.
+
 2020-04-23  Allen D. Ball  <ball@hcf.dev>
 
 	* src/main/java/voyeur/types/HardwareAddress.java:
@@ -15,8 +20,7 @@
 
 	* Added "Hosts" menu item.
 
-	* src/main/java/voyeur/NetworkMapperComponent.java,
-	src/main/java/voyeur/NetworkMapperConfiguration.java:
+	* src/main/java/voyeur/NetworkMapperComponent.java:
 	Initial writing: Provide and maintain NetworkMap.
 
 	* src/main/java/voyeur/NetworkMap.java: Initial writing.

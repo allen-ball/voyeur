@@ -21,7 +21,6 @@
   -->
 <project xmlns:resolver="antlib:org.apache.maven.resolver.ant"
          xmlns:spring-boot="antlib:org.springframework.boot.ant"
-         xmlns:http="antlib:ball.http.ant"
          xmlns:util="antlib:ball.util.ant"
          name="voyeur" basedir="." default="jar">
   <description>

@@ -20,32 +20,21 @@ package voyeur;
  * limitations under the License.
  * ##########################################################################
  */
-import java.math.BigInteger;
 import java.net.InetAddress;
-import java.util.Comparator;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentSkipListMap;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Service;
 
 /**
- * {@link java.util.Map} implementation mapping host ({@link InetAddress})
- * to last response.
+ * {@link InetAddress} to last response time {@link java.util.Map}.
  *
  * @author {@link.uri mailto:ball@hcf.dev Allen D. Ball}
  * @version $Revision$
  */
-public class NetworkMap extends ConcurrentSkipListMap<InetAddress,Long> {
-    private static final long serialVersionUID = -3303365313265425744L;
-
-    private static final Comparator<InetAddress> COMPARATOR =
-        Comparator
-        .<InetAddress>comparingInt(t -> t.getAddress().length)
-        .thenComparingInt(t -> t.isLoopbackAddress() ? -1 : 1)
-        .thenComparing(t -> new BigInteger(1, t.getAddress()));
-
-    /**
-     * Sole constructor.
-     */
-    public NetworkMap() { super(COMPARATOR); }
+@Service
+@NoArgsConstructor
+public class NetworkMap extends InetAddressMap<Long> {
+    private static final long serialVersionUID = -7995278362750060947L;
 
     /**
      * See {@link #put(Object,Object)}.
