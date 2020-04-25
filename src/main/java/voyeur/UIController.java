@@ -21,7 +21,6 @@ package voyeur;
  * ##########################################################################
  */
 import ball.spring.AbstractController;
-import ball.upnp.ssdp.SSDPDiscoveryCache;
 import ball.upnp.ssdp.SSDPMessage;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -54,17 +53,17 @@ import static java.util.stream.Collectors.toList;
 @Controller
 @NoArgsConstructor @ToString @Log4j2
 public class UIController extends AbstractController {
-    @Autowired private SSDPDiscoveryCache ssdp = null;
-    @Autowired private Set<NetworkInterface> interfaces = null;
+    @Autowired private SSDP ssdp = null;
+    @Autowired private NetworkInterfaces interfaces = null;
     @Autowired private ARPCache arp = null;
-    @Autowired private NetworkMap map = null;
+    @Autowired private Hosts hosts = null;
 
     @ModelAttribute("upnp")
     public Map<URI,List<URI>> upnp() {
         Map<URI,List<URI>> map =
             ssdp().values()
             .stream()
-            .map(SSDPDiscoveryCache.Value::getSSDPMessage)
+            .map(SSDP.Value::getSSDPMessage)
             .collect(groupingBy(SSDPMessage::getLocation,
                                 ConcurrentSkipListMap::new,
                                 mapping(SSDPMessage::getUSN, toList())));
@@ -73,16 +72,16 @@ public class UIController extends AbstractController {
     }
 
     @ModelAttribute("ssdp")
-    public SSDPDiscoveryCache ssdp() { return ssdp; }
+    public SSDP ssdp() { return ssdp; }
 
     @ModelAttribute("interfaces")
-    public Set<NetworkInterface> interfaces() { return interfaces; }
+    public NetworkInterfaces interfaces() { return interfaces; }
 
     @ModelAttribute("arp")
     public ARPCache arp() { return arp; }
 
     @ModelAttribute("hosts")
-    public Set<InetAddress> hosts() { return map.keySet(); }
+    public Set<InetAddress> hosts() { return hosts.keySet(); }
 
     @RequestMapping(value = {
                         "/",

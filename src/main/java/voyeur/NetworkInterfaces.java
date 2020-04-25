@@ -21,34 +21,33 @@ package voyeur;
  * ##########################################################################
  */
 import java.net.NetworkInterface;
+import java.util.Collections;
 import java.util.Comparator;
-import java.util.Set;
+import java.util.List;
 import java.util.concurrent.ConcurrentSkipListSet;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
 /**
- * Network interface {@link Configuration}.
+ * Network interface {@link java.util.Set} and {@link Service}.
  *
  * @author {@link.uri mailto:ball@hcf.dev Allen D. Ball}
  * @version $Revision$
  */
-@Configuration
-@NoArgsConstructor @ToString @Log4j2
-public class NetworkInterfaceConfiguration {
-    @Bean
-    public Set<NetworkInterface> interfaces() {
-        Comparator<NetworkInterface> comparator =
-            Comparator
-            .<NetworkInterface>comparingInt(t -> isLoopback(t) ? -1 : 1)
-            .thenComparing(t -> t.getName().replaceAll("[0-9]", ""))
-            .thenComparingInt(t -> t.getIndex());
+@Service
+@Log4j2
+public class NetworkInterfaces
+             extends ConcurrentSkipListSet<NetworkInterface> {
+    private static final long serialVersionUID = -7886800390686536953L;
 
-        return new ConcurrentSkipListSet<>(comparator);
-    }
+    private static final Comparator<NetworkInterface> COMPARATOR =
+        Comparator
+        .<NetworkInterface>comparingInt(t -> isLoopback(t) ? -1 : 1)
+        .thenComparing(t -> t.getName().replaceAll("[\\p{Digit}]", ""))
+        .thenComparingInt(t -> t.getIndex());
 
     private static boolean isLoopback(NetworkInterface ni) {
         boolean isLoopback = false;
@@ -59,5 +58,20 @@ public class NetworkInterfaceConfiguration {
         }
 
         return isLoopback;
+    }
+
+    /**
+     * Sole constructor.
+     */
+    public NetworkInterfaces() { super(COMPARATOR); }
+
+    @EventListener(ApplicationReadyEvent.class)
+    @Scheduled(fixedDelay = 60 * 1000)
+    public void update() throws Exception {
+        List<NetworkInterface> list =
+            Collections.list(NetworkInterface.getNetworkInterfaces());
+
+        addAll(list);
+        retainAll(list);
     }
 }

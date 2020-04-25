@@ -1,9 +1,9 @@
 2020-04-24  Allen D. Ball  <ball@hcf.dev>
 
-	* src/main/java/voyeur/ARPCache.java: Initial writing.
+	* Re-factored @Configuration and @Component pairs to @Service
+	implementations.
 
-	* src/main/java/voyeur/InetAddressMap.java:
-	Re-factored as a @Service.
+	* src/main/java/voyeur/ARPCache.java: Initial writing.
 
 2020-04-23  Allen D. Ball  <ball@hcf.dev>
 
@@ -21,11 +21,6 @@
 2019-09-08  Allen D. Ball  <ball@sol.local>
 
 	* Added "Hosts" menu item.
-
-	* src/main/java/voyeur/NetworkMapperComponent.java:
-	Initial writing: Provide and maintain NetworkMap.
-
-	* src/main/java/voyeur/NetworkMap.java: Initial writing.
 
 2019-07-29  Allen D. Ball  <ball@sol.local>
 

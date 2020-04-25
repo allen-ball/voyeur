@@ -20,43 +20,33 @@ package voyeur;
  * limitations under the License.
  * ##########################################################################
  */
-import ball.upnp.ssdp.SSDPDiscoveryCache;
 import ball.upnp.ssdp.SSDPResponse;
+import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.List;
-import java.util.Set;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+import java.util.Objects;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-
-import static java.util.Collections.list;
+import org.springframework.stereotype.Service;
 
 /**
- * Network mapper {@link Component}.
- *
- * {@injected.fields}
+ * {@link InetAddress} to last response time {@link java.util.Map}.
  *
  * @author {@link.uri mailto:ball@hcf.dev Allen D. Ball}
  * @version $Revision$
  */
-@Component
-@NoArgsConstructor @ToString @Log4j2
-public class NetworkMapperComponent {
+@Service
+@NoArgsConstructor
+public class Hosts extends InetAddressMap<Long> {
+    private static final long serialVersionUID = -6169729662426799504L;
+
     private static final long MAX_AGE = 15L * 60 * 1000;
 
-    @Autowired private Set<NetworkInterface> interfaces = null;
-    @Autowired private SSDPDiscoveryCache cache = null;
-    @Autowired private NetworkMap map = null;
-
-    @PostConstruct
-    public void init() { }
+    @Autowired private NetworkInterfaces interfaces = null;
+    @Autowired private SSDP ssdp = null;
 
     @EventListener(ApplicationReadyEvent.class)
     @Scheduled(fixedDelay = 60 * 1000)
@@ -64,34 +54,38 @@ public class NetworkMapperComponent {
         interfaces.stream()
             .map(NetworkInterface::getInterfaceAddresses)
             .flatMap(List::stream)
-            .forEach(t -> map.add(t.getAddress()));
+            .forEach(t -> add(t.getAddress()));
     }
-/*
-    @EventListener(ApplicationReadyEvent.class)
-    public void nmapPing() throws Exception {
-        new ProcessBuilder("nmap", "-n", "-oX", "-", "-PS", "10.0.1.0/24")
-            .inheritIO()
-            .start()
-            .waitFor();
-    }
-*/
+
     @Scheduled(fixedDelay = 60 * 1000)
     public void ssdp() {
-        cache.values()
+        ssdp.values()
             .stream()
-            .map(SSDPDiscoveryCache.Value::getSSDPMessage)
+            .map(SSDP.Value::getSSDPMessage)
             .filter(t -> t instanceof SSDPResponse)
             .map(t -> ((SSDPResponse) t).getInetAddress())
-            .forEach(t -> map.add(t));
+            .forEach(t -> add(t));
     }
 
     @Scheduled(fixedDelay = 60 * 1000)
     public void cull() {
         long now = System.currentTimeMillis();
 
-        map.values().removeIf(t -> (now - t) > MAX_AGE);
+        values().removeIf(t -> (now - t) > MAX_AGE);
     }
 
-    @PreDestroy
-    public void destroy() { }
+    /**
+     * See {@link #put(Object,Object)}.
+     *
+     * @param   key             The {@link InetAddress} to add with a last
+     *                          response time of "now."
+     *
+     * @return  {@code true} if {@link.this} map changes; {@code false}
+     *          otherwise.
+     */
+    public boolean add(InetAddress key) {
+        Long value = System.currentTimeMillis();
+
+        return Objects.equals(put(key, value), value);
+    }
 }

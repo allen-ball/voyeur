@@ -25,28 +25,25 @@ import ball.upnp.ssdp.SSDPDiscoveryThread;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
- * {@link ball.upnp.ssdp} {@link Component}.
- *
- * {@injected.fields}
+ * {@link SSDPDiscoveryCache} {@link Service}.
  *
  * @author {@link.uri mailto:ball@hcf.dev Allen D. Ball}
  * @version $Revision$
  */
-@Component
-@NoArgsConstructor @ToString @Log4j2
-public class SSDPComponent {
-    @Autowired private SSDPDiscoveryCache cache = null;
-    @Autowired private SSDPDiscoveryThread thread = null;
+@Service
+@NoArgsConstructor @Log4j2
+public class SSDP extends SSDPDiscoveryCache {
+    private static final long serialVersionUID = -5185389976118221985L;
 
     @PostConstruct
-    public void init() {
-        thread.addListener(cache);
+    public void init() throws Exception {
+        SSDPDiscoveryThread thread = new SSDPDiscoveryThread(60);
+
+        thread.addListener(this);
         thread.start();
     }
 
