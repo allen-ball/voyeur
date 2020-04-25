@@ -41,24 +41,27 @@ import org.springframework.stereotype.Service;
 @Service
 @NoArgsConstructor
 public class Hosts extends InetAddressMap<Long> {
-    private static final long serialVersionUID = -6169729662426799504L;
+    private static final long serialVersionUID = -8398595760398572996L;
 
     private static final long MAX_AGE = 15L * 60 * 1000;
 
     @Autowired private NetworkInterfaces interfaces = null;
+    @Autowired private ARPCache arp = null;
     @Autowired private SSDP ssdp = null;
 
     @EventListener(ApplicationReadyEvent.class)
     @Scheduled(fixedDelay = 60 * 1000)
-    public void interfaces() {
-        interfaces.stream()
+    public void update() {
+        interfaces
+            .stream()
             .map(NetworkInterface::getInterfaceAddresses)
             .flatMap(List::stream)
             .forEach(t -> add(t.getAddress()));
-    }
 
-    @Scheduled(fixedDelay = 60 * 1000)
-    public void ssdp() {
+        arp.keySet()
+            .stream()
+            .forEach(t -> add(t));
+
         ssdp.values()
             .stream()
             .map(SSDP.Value::getSSDPMessage)
@@ -67,6 +70,7 @@ public class Hosts extends InetAddressMap<Long> {
             .forEach(t -> add(t));
     }
 
+    @EventListener(ApplicationReadyEvent.class)
     @Scheduled(fixedDelay = 60 * 1000)
     public void cull() {
         long now = System.currentTimeMillis();

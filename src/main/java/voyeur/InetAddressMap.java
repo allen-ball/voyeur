@@ -37,8 +37,8 @@ public abstract class InetAddressMap<V>
 
     private static final Comparator<InetAddress> COMPARATOR =
         Comparator
-        .<InetAddress>comparingInt(t -> t.getAddress().length)
-        .thenComparingInt(t -> t.isLoopbackAddress() ? -1 : 1)
+        .<InetAddress>comparingInt(t -> t.isLoopbackAddress() ? -1 : 1)
+        .thenComparingInt(t -> t.getAddress().length)
         .thenComparing(t -> new BigInteger(1, t.getAddress()));
 
     /**
