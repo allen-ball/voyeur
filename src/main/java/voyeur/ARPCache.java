@@ -94,12 +94,13 @@ public class ARPCache extends InetAddressMap<HardwareAddress> {
 
     private ARPCache parse(ProcessBuilder builder) throws Exception {
         ARPCache map = null;
+        Process process = builder.start();
 
-        try (InputStream in = builder.start().getInputStream()) {
+        try (InputStream in = process.getInputStream()) {
             map =
                 new BufferedReader(new InputStreamReader(in, UTF_8))
                 .lines()
-                .map(t -> PATTERN.matcher(t))
+                .map(PATTERN::matcher)
                 .filter(Matcher::matches)
                 .collect(toMap(k -> getInetAddress(k.group("inet")),
                                v -> new HardwareAddress(v.group("mac")),

@@ -27,7 +27,6 @@ import java.net.NetworkInterface;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListMap;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -81,7 +80,7 @@ public class UIController extends AbstractController {
     public ARPCache arp() { return arp; }
 
     @ModelAttribute("hosts")
-    public Set<InetAddress> hosts() { return hosts.keySet(); }
+    public Hosts hosts() { return hosts; }
 
     @RequestMapping(value = {
                         "/",
