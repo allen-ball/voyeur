@@ -21,75 +21,100 @@ package voyeur;
  * ##########################################################################
  */
 import ball.upnp.ssdp.SSDPResponse;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+
+import static java.lang.ProcessBuilder.Redirect.PIPE;
+import static java.util.stream.Collectors.toList;
 
 /**
- * {@link InetAddress} to last response time {@link java.util.Map}.
+ * {@link InetAddress} to {@code nmap} {@link Document} output
+ * {@link java.util.Map}.
  *
  * @author {@link.uri mailto:ball@hcf.dev Allen D. Ball}
  * @version $Revision$
  */
 @Service
-@NoArgsConstructor
-public class Hosts extends InetAddressMap<Long> {
-    private static final long serialVersionUID = -8398595760398572996L;
+@NoArgsConstructor @Log4j2
+public class Hosts extends InetAddressMap<Document> {
+    private static final long serialVersionUID = -4713999339531142905L;
 
     private static final long MAX_AGE = 15L * 60 * 1000;
 
-    @Autowired private NetworkInterfaces interfaces = null;
-    @Autowired private ARPCache arp = null;
-    @Autowired private SSDP ssdp = null;
+    private static final List<String> NMAP_ARGV =
+        Arrays.asList("nmap", "-n", "-oX", "-", "-PS");
+
+    private static final DocumentBuilder BUILDER;
+
+    static {
+        try {
+            BUILDER =
+                DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        } catch (Exception exception) {
+            throw new ExceptionInInitializerError(exception);
+        }
+    }
+
+    /** @serial */ @Autowired private NetworkInterfaces interfaces = null;
+    /** @serial */ @Autowired private ARPCache arp = null;
+    /** @serial */ @Autowired private SSDP ssdp = null;
 
     @EventListener(ApplicationReadyEvent.class)
     @Scheduled(fixedDelay = 60 * 1000)
     public void update() {
-        interfaces
-            .stream()
-            .map(NetworkInterface::getInterfaceAddresses)
-            .flatMap(List::stream)
-            .forEach(t -> add(t.getAddress()));
+        try {
+            Document empty = BUILDER.newDocument();
 
-        arp.keySet()
-            .stream()
-            .forEach(t -> add(t));
+            interfaces
+                .stream()
+                .map(NetworkInterface::getInterfaceAddresses)
+                .flatMap(List::stream)
+                .forEach(t -> putIfAbsent(t.getAddress(), empty));
 
-        ssdp.values()
-            .stream()
-            .map(SSDP.Value::getSSDPMessage)
-            .filter(t -> t instanceof SSDPResponse)
-            .map(t -> ((SSDPResponse) t).getInetAddress())
-            .forEach(t -> add(t));
-    }
+            arp.keySet()
+                .stream()
+                .forEach(t -> putIfAbsent(t, empty));
 
-    @EventListener(ApplicationReadyEvent.class)
-    @Scheduled(fixedDelay = 60 * 1000)
-    public void cull() {
-        long now = System.currentTimeMillis();
+            ssdp.values()
+                .stream()
+                .map(SSDP.Value::getSSDPMessage)
+                .filter(t -> t instanceof SSDPResponse)
+                .map(t -> ((SSDPResponse) t).getInetAddress())
+                .forEach(t -> putIfAbsent(t, empty));
 
-        values().removeIf(t -> (now - t) > MAX_AGE);
-    }
+            for (InetAddress key : keySet()) {
+                List<String> argv = NMAP_ARGV.stream().collect(toList());
 
-    /**
-     * See {@link #put(Object,Object)}.
-     *
-     * @param   key             The {@link InetAddress} to add with a last
-     *                          response time of "now."
-     *
-     * @return  {@code true} if {@link.this} map changes; {@code false}
-     *          otherwise.
-     */
-    public boolean add(InetAddress key) {
-        Long value = System.currentTimeMillis();
+                argv.add(key.getHostAddress());
 
-        return Objects.equals(put(key, value), value);
+                ProcessBuilder builder =
+                    new ProcessBuilder(argv)
+                    .inheritIO()
+                    .redirectOutput(PIPE);
+                Process process = builder.start();
+
+                try (InputStream in = process.getInputStream()) {
+                    Document value = BUILDER.parse(in);
+
+                    put(key, value);
+                }
+            }
+        } catch (Exception exception) {
+            log.error(exception.getMessage(), exception);
+        }
     }
 }

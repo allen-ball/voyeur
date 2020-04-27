@@ -129,6 +129,7 @@
           <tbody>
             <tr th:each="entry : ${hosts}">
               <td><code th:text="${entry.key.hostAddress}"/></td>
+              <!-- <td>[(${entry.value})]</td> -->
             </tr>
           </tbody>
         </table>
