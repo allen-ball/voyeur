@@ -46,6 +46,7 @@
   </licenses>
   <properties>
     <jre.version>1.8</jre.version>
+    <start-class>voyeur.Launcher</start-class>
   </properties>
   <dependencies verbose="true">
     <dependency>
