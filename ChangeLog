@@ -1,3 +1,8 @@
+2020-06-16  Allen D. Ball  <ball@hcf.dev>
+
+	* src/main/java/voyeur/Nmap.java:
+	Periodically run nmap and make the output available.
+
 2020-04-24  Allen D. Ball  <ball@hcf.dev>
 
 	* Re-factored @Configuration and @Component pairs to @Service
@@ -17,10 +22,6 @@
 2020-02-03  Allen D. Ball  <ball@hcf.dev>
 
 	* License under Apache License, Version 2.0.
-
-2019-09-08  Allen D. Ball  <ball@sol.local>
-
-	* Added "Hosts" menu item.
 
 2019-07-29  Allen D. Ball  <ball@sol.local>
 

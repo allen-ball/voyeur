@@ -22,8 +22,6 @@ package voyeur;
  */
 import ball.spring.AbstractController;
 import ball.upnp.ssdp.SSDPMessage;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +53,7 @@ public class UIController extends AbstractController {
     @Autowired private SSDP ssdp = null;
     @Autowired private NetworkInterfaces interfaces = null;
     @Autowired private ARPCache arp = null;
-    @Autowired private Hosts hosts = null;
+    @Autowired private Nmap nmap = null;
 
     @ModelAttribute("upnp")
     public Map<URI,List<URI>> upnp() {
@@ -79,13 +77,13 @@ public class UIController extends AbstractController {
     @ModelAttribute("arp")
     public ARPCache arp() { return arp; }
 
-    @ModelAttribute("hosts")
-    public Hosts hosts() { return hosts; }
+    @ModelAttribute("nmap")
+    public Nmap nmap() { return nmap; }
 
     @RequestMapping(value = {
                         "/",
                         "/upnp/devices", "/upnp/ssdp",
-                        "/network/interfaces", "/network/arp", "/network/hosts"
+                        "/network/interfaces", "/network/arp", "/network/nmap"
                     })
     public String root(Model model) { return getViewName(); }
 
