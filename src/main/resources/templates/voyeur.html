@@ -129,8 +129,7 @@
           <tbody>
             <tr th:each="key : ${nmap.keySet()}">
               <td>
-                <a th:href="@{/network/nmap/{ip}.xml(ip=${key.hostAddress})}"
-                   th:target="_newtab">
+                <a th:href="@{/network/nmap/{ip}.xml(ip=${key.hostAddress})}" th:target="_newtab">
                   <code th:text="${key.hostAddress}"/>
                 </a>
                 <p><code th:text="${nmap.getPorts(key)}"/></p>

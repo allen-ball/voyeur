@@ -23,7 +23,6 @@ package voyeur;
 import ball.upnp.ssdp.SSDPResponse;
 import ball.xml.XalanConstants;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.InputStream;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -32,14 +31,15 @@ import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.stream.Stream;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -79,91 +79,121 @@ import static javax.xml.xpath.XPathConstants.NUMBER;
  * @author {@link.uri mailto:ball@hcf.dev Allen D. Ball}
  * @version $Revision$
  */
-@RestController @Service
+@RestController
+@RequestMapping(value = { "/network/nmap/" },
+                produces = MediaType.APPLICATION_XML_VALUE)
+@Service
 @NoArgsConstructor @Log4j2
 public class Nmap extends InetAddressMap<Document> implements XalanConstants {
     private static final long serialVersionUID = 1L;
 
-    private static final Duration MAX_AGE = Duration.ofMinutes(15);
+    private static final Duration MAX_AGE = Duration.ofMinutes(30);
 
+    private static final String NMAP = "nmap";
     private static final List<String> NMAP_ARGV =
-        Arrays.asList("nmap", "-n", "-PS", "-A",
-                      "--no-stylesheet", "-oX", "-");
-
-    private static final DocumentBuilderFactory FACTORY;
-    private static final XPath XPATH;
-    private static final Transformer TRANSFORMER;
-
-    static {
-        try {
-            FACTORY = DocumentBuilderFactory.newInstance();
-
-            XPATH = XPathFactory.newInstance().newXPath();
-
-            TRANSFORMER =
-                TransformerFactory.newInstance().newTransformer();
-            TRANSFORMER.setOutputProperty(OMIT_XML_DECLARATION, NO);
-            TRANSFORMER.setOutputProperty(INDENT, YES);
-            TRANSFORMER.setOutputProperty(XALAN_INDENT_AMOUNT.toString(),
-                                          String.valueOf(2));
-        } catch (Exception exception) {
-            throw new ExceptionInInitializerError(exception);
-        }
-    }
+        Stream.of(NMAP, "--no-stylesheet", "-oX", "-", "-n", "-PS", "-A")
+        .collect(toList());
 
     /** @serial */ @Autowired private NetworkInterfaces interfaces = null;
     /** @serial */ @Autowired private ARPCache arp = null;
     /** @serial */ @Autowired private SSDP ssdp = null;
-    /** @serial */ private final ThreadPoolExecutor executor =
-        (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
+    /** @serial */ private DocumentBuilderFactory factory = null;
+    /** @serial */ private XPath xpath = null;
+    /** @serial */ private Transformer transformer = null;
+    /** @serial */ private ThreadPoolExecutor executor = null;
+    /** @serial */ private boolean disabled = true;
+
+    @PostConstruct
+    public void init() throws Exception {
+        factory = DocumentBuilderFactory.newInstance();
+
+        xpath = XPathFactory.newInstance().newXPath();
+
+        transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.setOutputProperty(OMIT_XML_DECLARATION, NO);
+        transformer.setOutputProperty(INDENT, YES);
+        transformer.setOutputProperty(XALAN_INDENT_AMOUNT.toString(),
+                                      String.valueOf(2));
+
+        executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
+
+        try {
+            Process process =
+                new ProcessBuilder(NMAP, "-version")
+                .inheritIO()
+                .redirectOutput(PIPE)
+                .start();
+
+            try (InputStream in = process.getInputStream()) {
+                while (in.read() != -1) {
+                }
+            }
+
+            disabled = (process.waitFor() != 0);
+        } catch (Exception exception) {
+            disabled = true;
+        }
+
+        if (disabled) {
+            log.warn("nmap command is not available");
+        }
+    }
+
+    @PreDestroy
+    public void destroy() { }
 
     @EventListener(ApplicationReadyEvent.class)
     @Scheduled(fixedDelay = 30 * 1000)
     public void update() {
-        try {
-            Document empty = FACTORY.newDocumentBuilder().newDocument();
+        if (! isDisabled()) {
+            try {
+                Document empty = factory.newDocumentBuilder().newDocument();
 
-            interfaces
-                .stream()
-                .map(NetworkInterface::getInterfaceAddresses)
-                .flatMap(List::stream)
-                 .map(InterfaceAddress::getAddress)
-                .filter(t -> (! t.isMulticastAddress()))
-                .forEach(t -> putIfAbsent(t, empty));
+                empty.appendChild(empty.createElement("nmaprun"));
 
-            arp.keySet()
-                .stream()
-                .filter(t -> (! t.isMulticastAddress()))
-                .forEach(t -> putIfAbsent(t, empty));
-
-            ssdp.values()
-                .stream()
-                .map(SSDP.Value::getSSDPMessage)
-                .filter(t -> t instanceof SSDPResponse)
-                .map(t -> ((SSDPResponse) t).getInetAddress())
-                .forEach(t -> putIfAbsent(t, empty));
-
-            if (executor.getActiveCount() == 0) {
-                keySet()
+                interfaces
                     .stream()
-                    .map(Worker::new)
-                    .forEach(t -> executor.execute(t));
+                    .map(NetworkInterface::getInterfaceAddresses)
+                    .flatMap(List::stream)
+                    .map(InterfaceAddress::getAddress)
+                    .filter(t -> (! t.isMulticastAddress()))
+                    .forEach(t -> putIfAbsent(t, empty));
+
+                arp.keySet()
+                    .stream()
+                    .filter(t -> (! t.isMulticastAddress()))
+                    .forEach(t -> putIfAbsent(t, empty));
+
+                ssdp.values()
+                    .stream()
+                    .map(SSDP.Value::getSSDPMessage)
+                    .filter(t -> t instanceof SSDPResponse)
+                    .map(t -> ((SSDPResponse) t).getInetAddress())
+                    .forEach(t -> putIfAbsent(t, empty));
+
+                if (executor.getActiveCount() == 0) {
+                    keySet()
+                        .stream()
+                        .map(Worker::new)
+                        .forEach(t -> executor.execute(t));
+                }
+            } catch (Exception exception) {
+                log.error(exception.getMessage(), exception);
             }
-        } catch (Exception exception) {
-            log.error(exception.getMessage(), exception);
         }
     }
 
-    @RequestMapping(value = { "/network/nmap/{ip}.xml" },
-                    produces = MediaType.APPLICATION_XML_VALUE)
+    @RequestMapping(value = { "{ip}.xml" })
     public String nmap(@PathVariable String ip) throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        TRANSFORMER.transform(new DOMSource(get(InetAddress.getByName(ip))),
+        transformer.transform(new DOMSource(get(InetAddress.getByName(ip))),
                               new StreamResult(out));
 
         return out.toString("UTF-8");
     }
+
+    public boolean isDisabled() { return disabled; }
 
     public Set<Integer> getPorts(InetAddress key) {
         Set<Integer> ports = new TreeSet<>();
@@ -172,7 +202,7 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
         if (document != null) {
             try {
                 XPathExpression expression =
-                    XPATH.compile("/nmaprun/host/ports/port/@portid");
+                    xpath.compile("/nmaprun/host/ports/port/@portid");
                 NodeList list =
                     (NodeList) expression.evaluate(document, NODESET);
 
@@ -194,7 +224,7 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
         if (document != null) {
             try {
                 XPathExpression expression =
-                    XPATH.compile("/nmaprun/host/ports/port/service/@product");
+                    xpath.compile("/nmaprun/host/ports/port/service/@product");
                 NodeList list =
                     (NodeList) expression.evaluate(document, NODESET);
 
@@ -217,7 +247,7 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
         public void run() {
             try {
                 XPathExpression expression =
-                    XPATH.compile("/nmaprun/runstats/finished/@time");
+                    xpath.compile("/nmaprun/runstats/finished/@time");
                 long start =
                     ((Number) expression.evaluate(get(key), NUMBER))
                     .longValue();
@@ -236,7 +266,7 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
 
                     argv.add(key.getHostAddress());
 
-                    DocumentBuilder builder = FACTORY.newDocumentBuilder();
+                    DocumentBuilder builder = factory.newDocumentBuilder();
                     Process process =
                         new ProcessBuilder(argv)
                         .inheritIO()
@@ -245,21 +275,8 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
 
                     try (InputStream in = process.getInputStream()) {
                         put(key, builder.parse(in));
-                        /*
-                         * save(get(key),
-                         *      "target/" + key.getHostAddress() + ".xml");
-                         */
                     }
                 }
-            } catch (Exception exception) {
-                log.error(exception.getMessage(), exception);
-            }
-        }
-
-        private void save(Document document, String path) {
-            try {
-                TRANSFORMER.transform(new DOMSource(document),
-                                      new StreamResult(new File(path)));
             } catch (Exception exception) {
                 log.error(exception.getMessage(), exception);
             }
