@@ -31,7 +31,8 @@
                 <a th:text="'Network'"/>
                 <ul th:ref="navbar-dropdown">
                   <li><a th:text="'Interfaces'" th:href="@{/network/interfaces}"/></li>
-                  <li><a th:text="'Hosts'" th:href="@{/network/hosts}"/></li>
+                  <li><a th:text="'ARP'" th:href="@{/network/arp}"/></li>
+                  <li><a th:text="'Nmap'" th:href="@{/network/nmap}"/></li>
                 </ul>
               </li>
             </ul>
@@ -49,7 +50,7 @@
       <section th:case="'/upnp/devices'">
         <table>
           <tbody>
-            <tr th:each="entry : ${upnp.entrySet()}">
+            <tr th:each="entry : ${upnp}">
               <td>
                 <table>
                   <tbody>
@@ -73,7 +74,7 @@
       <section th:case="'/upnp/ssdp'">
         <table>
           <tbody>
-            <tr th:each="entry : ${ssdp.entrySet()}">
+            <tr th:each="entry : ${ssdp}">
               <td th:object="${entry.value.SSDPMessage}">
                 <p><code th:text="${entry.key}"/></p>
                 <p th:with="href = @{*{location}}">
@@ -113,12 +114,29 @@
           </tbody>
         </table>
       </section>
-      <section th:case="'/network/hosts'">
+      <section th:case="'/network/arp'">
         <table>
           <tbody>
-            <tr th:each="address : ${hosts}">
+            <tr th:each="entry : ${arp}">
+              <td><code th:text="${entry.key.hostAddress}"/></td>
+              <td><code th:text="${entry.value}"/></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <section th:case="'/network/nmap'">
+        <table>
+          <tbody>
+            <tr th:each="key : ${nmap.keySet()}">
               <td>
-                <code th:text="${address.hostAddress}"/>
+                <a th:href="@{/network/nmap/{ip}.xml(ip=${key.hostAddress})}" th:target="_newtab">
+                  <code th:text="${key.hostAddress}"/>
+                </a>
+                <p><code th:text="${nmap.getPorts(key)}"/></p>
+              </td>
+              <td>
+                <p th:each="product : ${nmap.getProducts(key)}"
+                   th:text="${product}"/>
               </td>
             </tr>
           </tbody>
