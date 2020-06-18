@@ -20,6 +20,7 @@ package voyeur;
  * limitations under the License.
  * ##########################################################################
  */
+import ball.annotation.CompileTimeCheck;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -60,6 +61,7 @@ public class ARPCache extends InetAddressMap<HardwareAddress> {
         .inheritIO()
         .redirectOutput(PIPE);
 
+    @CompileTimeCheck
     private static final Pattern PATTERN =
         Pattern.compile("(?i)^(?<host>.+)"
                         + " [(](?<inet>[\\p{Digit}.]+)[)]"
