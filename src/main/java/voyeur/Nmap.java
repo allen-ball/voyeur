@@ -22,8 +22,11 @@ package voyeur;
  */
 import ball.upnp.ssdp.SSDPResponse;
 import ball.xml.XalanConstants;
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -35,8 +38,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -58,6 +59,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,6 +68,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
 import static java.lang.ProcessBuilder.Redirect.PIPE;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.Collectors.toList;
 import static javax.xml.transform.OutputKeys.INDENT;
 import static javax.xml.transform.OutputKeys.OMIT_XML_DECLARATION;
@@ -73,7 +76,7 @@ import static javax.xml.xpath.XPathConstants.NODESET;
 import static javax.xml.xpath.XPathConstants.NUMBER;
 
 /**
- * {@link InetAddress} to {@code nmap} {@link Document} output
+ * {@link InetAddress} to {@code nmap} output {@link Document}
  * {@link java.util.Map}.
  *
  * @author {@link.uri mailto:ball@hcf.dev Allen D. Ball}
@@ -85,9 +88,8 @@ import static javax.xml.xpath.XPathConstants.NUMBER;
 @Service
 @NoArgsConstructor @Log4j2
 public class Nmap extends InetAddressMap<Document> implements XalanConstants {
-    private static final long serialVersionUID = 1L;
 
-    private static final Duration MAX_AGE = Duration.ofMinutes(30);
+    private static final Duration MAX_AGE = Duration.ofMinutes(60);
 
     private static final String NMAP = "nmap";
     private static final List<String> NMAP_ARGV =
@@ -97,10 +99,10 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
     /** @serial */ @Autowired private NetworkInterfaces interfaces = null;
     /** @serial */ @Autowired private ARPCache arp = null;
     /** @serial */ @Autowired private SSDP ssdp = null;
+    /** @serial */ @Autowired private ThreadPoolTaskExecutor executor = null;
     /** @serial */ private DocumentBuilderFactory factory = null;
     /** @serial */ private XPath xpath = null;
     /** @serial */ private Transformer transformer = null;
-    /** @serial */ private ThreadPoolExecutor executor = null;
     /** @serial */ private boolean disabled = true;
 
     @PostConstruct
@@ -115,18 +117,21 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
         transformer.setOutputProperty(XALAN_INDENT_AMOUNT.toString(),
                                       String.valueOf(2));
 
-        executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(4);
-
         try {
+            List<String> argv = Stream.of(NMAP, "-version").collect(toList());
+
+            log.info(String.valueOf(argv));
+
             Process process =
-                new ProcessBuilder(NMAP, "-version")
+                new ProcessBuilder(argv)
                 .inheritIO()
                 .redirectOutput(PIPE)
                 .start();
 
             try (InputStream in = process.getInputStream()) {
-                while (in.read() != -1) {
-                }
+                new BufferedReader(new InputStreamReader(in, UTF_8))
+                    .lines()
+                    .forEach(t -> log.info(t));
             }
 
             disabled = (process.waitFor() != 0);
@@ -171,12 +176,12 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
                     .map(t -> ((SSDPResponse) t).getInetAddress())
                     .forEach(t -> putIfAbsent(t, empty));
 
-                if (executor.getActiveCount() == 0) {
-                    keySet()
-                        .stream()
-                        .map(Worker::new)
-                        .forEach(t -> executor.execute(t));
-                }
+                keySet()
+                    .stream()
+                    .filter(t -> executor.getActiveCount() == 0)
+                    .filter(t -> MAX_AGE.compareTo(getOutputAge(t)) < 0)
+                    .map(Worker::new)
+                    .forEach(t -> executor.execute(t));
             } catch (Exception exception) {
                 log.error(exception.getMessage(), exception);
             }
@@ -239,6 +244,26 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
         return products;
     }
 
+    private Duration getOutputAge(InetAddress key) {
+        Document document = get(key);
+        long start = 0;
+
+        if (document != null) {
+            try {
+                XPathExpression expression =
+                    xpath.compile("/nmaprun/runstats/finished/@time");
+
+                 start =
+                    ((Number) expression.evaluate(get(key), NUMBER))
+                    .longValue();
+            } catch (Exception exception) {
+                log.error(exception.getMessage(), exception);
+            }
+        }
+
+        return Duration.between(Instant.ofEpochSecond(start), Instant.now());
+    }
+
     @RequiredArgsConstructor @ToString
     private class Worker implements Runnable {
         private final InetAddress key;
@@ -246,38 +271,35 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
         @Override
         public void run() {
             try {
-                XPathExpression expression =
-                    xpath.compile("/nmaprun/runstats/finished/@time");
-                long start =
-                    ((Number) expression.evaluate(get(key), NUMBER))
-                    .longValue();
-                Duration duration =
-                    Duration.between(Instant.ofEpochSecond(start),
-                                     Instant.now());
+                List<String> argv = NMAP_ARGV.stream().collect(toList());
 
-                if (MAX_AGE.compareTo(duration) < 0) {
-                    List<String> argv = NMAP_ARGV.stream().collect(toList());
+                if (key instanceof Inet4Address) {
+                    argv.add("-4");
+                } else if (key instanceof Inet6Address) {
+                    argv.add("-6");
+                }
 
-                    if (key instanceof Inet4Address) {
-                        argv.add("-4");
-                    } else if (key instanceof Inet6Address) {
-                        argv.add("-6");
-                    }
+                argv.add(key.getHostAddress());
 
-                    argv.add(key.getHostAddress());
+                DocumentBuilder builder = factory.newDocumentBuilder();
+                Process process =
+                    new ProcessBuilder(argv)
+                    .inheritIO()
+                    .redirectOutput(PIPE)
+                    .start();
 
-                    DocumentBuilder builder = factory.newDocumentBuilder();
-                    Process process =
-                        new ProcessBuilder(argv)
-                        .inheritIO()
-                        .redirectOutput(PIPE)
-                        .start();
+                try (InputStream in = process.getInputStream()) {
+                    put(key, builder.parse(in));
 
-                    try (InputStream in = process.getInputStream()) {
-                        put(key, builder.parse(in));
+                    int status = process.waitFor();
+
+                    if (status != 0) {
+                        throw new IOException(argv + " returned exit status "
+                                              + status);
                     }
                 }
             } catch (Exception exception) {
+                remove(key);
                 log.error(exception.getMessage(), exception);
             }
         }
