@@ -50,6 +50,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -88,8 +89,9 @@ import static javax.xml.xpath.XPathConstants.NUMBER;
 @Service
 @NoArgsConstructor @Log4j2
 public class Nmap extends InetAddressMap<Document> implements XalanConstants {
+    private static final long serialVersionUID = 1L;
 
-    private static final Duration MAX_AGE = Duration.ofMinutes(60);
+    private static final Duration INTERVAL = Duration.ofMinutes(60);
 
     private static final String NMAP = "nmap";
     private static final List<String> NMAP_ARGV =
@@ -178,8 +180,7 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
 
                 keySet()
                     .stream()
-                    .filter(t -> executor.getActiveCount() == 0)
-                    .filter(t -> MAX_AGE.compareTo(getOutputAge(t)) < 0)
+                    .filter(t -> INTERVAL.compareTo(getOutputAge(t)) < 0)
                     .map(Worker::new)
                     .forEach(t -> executor.execute(t));
             } catch (Exception exception) {
@@ -264,7 +265,7 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
         return Duration.between(Instant.ofEpochSecond(start), Instant.now());
     }
 
-    @RequiredArgsConstructor @ToString
+    @RequiredArgsConstructor @EqualsAndHashCode @ToString
     private class Worker implements Runnable {
         private final InetAddress key;
 
