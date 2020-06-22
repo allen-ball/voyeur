@@ -52,7 +52,7 @@ import static java.util.stream.Collectors.toMap;
 @Service
 @NoArgsConstructor @Log4j2
 public class ARPCache extends InetAddressMap<HardwareAddress> {
-    private static final long serialVersionUID = -7487827563704505614L;
+    private static final long serialVersionUID = 8171059827964411042L;
 
     private static final Path PATH = Paths.get("/proc/net/arp");
 
@@ -67,20 +67,27 @@ public class ARPCache extends InetAddressMap<HardwareAddress> {
                         + " [(](?<inet>[\\p{Digit}.]+)[)]"
                         + " at (?<mac>[\\p{XDigit}:]+) .*$");
 
+    /** @serial */ private boolean disabled = false;
+
     @EventListener(ApplicationReadyEvent.class)
     @Scheduled(fixedDelay = 60 * 1000)
     public void update() {
-        try {
-            ARPCache map = Files.exists(PATH) ? parse(PATH) : parse(BUILDER);
+        if (! isDisabled()) {
+            try {
+                ARPCache map =
+                    Files.exists(PATH) ? parse(PATH) : parse(BUILDER);
 
-            if (map != null) {
-                putAll(map);
-                keySet().retainAll(map.keySet());
+                if (map != null) {
+                    putAll(map);
+                    keySet().retainAll(map.keySet());
+                }
+            } catch (Exception exception) {
+                log.error(exception.getMessage(), exception);
             }
-        } catch (Exception exception) {
-            log.error(exception.getMessage(), exception);
         }
     }
+
+    public boolean isDisabled() { return disabled; }
 
     private ARPCache parse(Path path) throws Exception {
         ARPCache map =
@@ -96,17 +103,29 @@ public class ARPCache extends InetAddressMap<HardwareAddress> {
 
     private ARPCache parse(ProcessBuilder builder) throws Exception {
         ARPCache map = null;
-        Process process = builder.start();
 
-        try (InputStream in = process.getInputStream()) {
-            map =
-                new BufferedReader(new InputStreamReader(in, UTF_8))
-                .lines()
-                .map(PATTERN::matcher)
-                .filter(Matcher::matches)
-                .collect(toMap(k -> getInetAddress(k.group("inet")),
-                               v -> new HardwareAddress(v.group("mac")),
-                               (t, u) -> t, ARPCache::new));
+        try {
+            Process process = builder.start();
+
+            try (InputStream in = process.getInputStream()) {
+                map =
+                    new BufferedReader(new InputStreamReader(in, UTF_8))
+                    .lines()
+                    .map(PATTERN::matcher)
+                    .filter(Matcher::matches)
+                    .collect(toMap(k -> getInetAddress(k.group("inet")),
+                                   v -> new HardwareAddress(v.group("mac")),
+                                   (t, u) -> t, ARPCache::new));
+            }
+
+            disabled = (process.waitFor() != 0);
+        } catch (Exception exception) {
+            disabled = true;
+        }
+
+
+        if (disabled) {
+            log.warn("arp command is not available");
         }
 
         return map;
