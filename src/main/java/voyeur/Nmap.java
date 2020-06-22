@@ -89,7 +89,7 @@ import static javax.xml.xpath.XPathConstants.NUMBER;
 @Service
 @NoArgsConstructor @Log4j2
 public class Nmap extends InetAddressMap<Document> implements XalanConstants {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1039375546367339774L;
 
     private static final Duration INTERVAL = Duration.ofMinutes(60);
 
