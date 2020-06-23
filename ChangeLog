@@ -1,3 +1,7 @@
+2020-06-22  Allen D. Ball  <ball@hcf.dev>
+
+	* pom.xml: Released version 1.0.0.
+
 2020-06-18  Allen D. Ball  <ball@hcf.dev>
 
 	* Integrated spring-boot-starter-actuator and create a
