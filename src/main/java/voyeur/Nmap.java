@@ -80,6 +80,8 @@ import static javax.xml.xpath.XPathConstants.NUMBER;
  * {@link InetAddress} to {@code nmap} output {@link Document}
  * {@link java.util.Map}.
  *
+ * {@injected.fields}
+ *
  * @author {@link.uri mailto:ball@hcf.dev Allen D. Ball}
  * @version $Revision$
  */
