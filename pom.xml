@@ -111,6 +111,7 @@
             <links combine.children="append">
               <link>https://repo.hcf.dev/javadoc/ball-api/${ball-parent.version}/</link>
             </links>
+            <linksource>true</linksource>
           </configuration>
         </plugin>
         <plugin>
