@@ -49,14 +49,14 @@
 <span class="sourceLineNo">041</span>import java.util.stream.Stream;<a name="line.41"></a>
 <span class="sourceLineNo">042</span>import javax.annotation.PostConstruct;<a name="line.42"></a>
 <span class="sourceLineNo">043</span>import javax.annotation.PreDestroy;<a name="line.43"></a>
-<span class="sourceLineNo">044</span>import javax.xml.parsers.DocumentBuilder;<a name="line.44"></a>
-<span class="sourceLineNo">045</span>import javax.xml.parsers.DocumentBuilderFactory;<a name="line.45"></a>
-<span class="sourceLineNo">046</span>import javax.xml.transform.Transformer;<a name="line.46"></a>
-<span class="sourceLineNo">047</span>import javax.xml.transform.TransformerFactory;<a name="line.47"></a>
-<span class="sourceLineNo">048</span>import javax.xml.transform.dom.DOMSource;<a name="line.48"></a>
-<span class="sourceLineNo">049</span>import javax.xml.transform.stream.StreamResult;<a name="line.49"></a>
-<span class="sourceLineNo">050</span>import javax.xml.xpath.XPath;<a name="line.50"></a>
-<span class="sourceLineNo">051</span>import javax.xml.xpath.XPathExpression;<a name="line.51"></a>
+<span class="sourceLineNo">044</span>import javax.xml.namespace.QName;<a name="line.44"></a>
+<span class="sourceLineNo">045</span>import javax.xml.parsers.DocumentBuilder;<a name="line.45"></a>
+<span class="sourceLineNo">046</span>import javax.xml.parsers.DocumentBuilderFactory;<a name="line.46"></a>
+<span class="sourceLineNo">047</span>import javax.xml.transform.Transformer;<a name="line.47"></a>
+<span class="sourceLineNo">048</span>import javax.xml.transform.TransformerFactory;<a name="line.48"></a>
+<span class="sourceLineNo">049</span>import javax.xml.transform.dom.DOMSource;<a name="line.49"></a>
+<span class="sourceLineNo">050</span>import javax.xml.transform.stream.StreamResult;<a name="line.50"></a>
+<span class="sourceLineNo">051</span>import javax.xml.xpath.XPath;<a name="line.51"></a>
 <span class="sourceLineNo">052</span>import javax.xml.xpath.XPathFactory;<a name="line.52"></a>
 <span class="sourceLineNo">053</span>import lombok.EqualsAndHashCode;<a name="line.53"></a>
 <span class="sourceLineNo">054</span>import lombok.NoArgsConstructor;<a name="line.54"></a>
@@ -213,109 +213,101 @@
 <span class="sourceLineNo">205</span><a name="line.205"></a>
 <span class="sourceLineNo">206</span>    public Set&lt;Integer&gt; getPorts(InetAddress key) {<a name="line.206"></a>
 <span class="sourceLineNo">207</span>        Set&lt;Integer&gt; ports = new TreeSet&lt;&gt;();<a name="line.207"></a>
-<span class="sourceLineNo">208</span>        Document document = get(key);<a name="line.208"></a>
-<span class="sourceLineNo">209</span><a name="line.209"></a>
-<span class="sourceLineNo">210</span>        if (document != null) {<a name="line.210"></a>
-<span class="sourceLineNo">211</span>            try {<a name="line.211"></a>
-<span class="sourceLineNo">212</span>                XPathExpression expression =<a name="line.212"></a>
-<span class="sourceLineNo">213</span>                    xpath.compile("/nmaprun/host/ports/port/@portid");<a name="line.213"></a>
-<span class="sourceLineNo">214</span>                NodeList list =<a name="line.214"></a>
-<span class="sourceLineNo">215</span>                    (NodeList) expression.evaluate(document, NODESET);<a name="line.215"></a>
+<span class="sourceLineNo">208</span>        NodeList list =<a name="line.208"></a>
+<span class="sourceLineNo">209</span>            (NodeList) get(key, "/nmaprun/host/ports/port/@portid", NODESET);<a name="line.209"></a>
+<span class="sourceLineNo">210</span><a name="line.210"></a>
+<span class="sourceLineNo">211</span>        if (list != null) {<a name="line.211"></a>
+<span class="sourceLineNo">212</span>            for (int i = 0; i &lt; list.getLength(); i += 1) {<a name="line.212"></a>
+<span class="sourceLineNo">213</span>                ports.add(Integer.parseInt(list.item(i).getNodeValue()));<a name="line.213"></a>
+<span class="sourceLineNo">214</span>            }<a name="line.214"></a>
+<span class="sourceLineNo">215</span>        }<a name="line.215"></a>
 <span class="sourceLineNo">216</span><a name="line.216"></a>
-<span class="sourceLineNo">217</span>                for (int i = 0; i &lt; list.getLength(); i += 1) {<a name="line.217"></a>
-<span class="sourceLineNo">218</span>                    ports.add(Integer.parseInt(list.item(i).getNodeValue()));<a name="line.218"></a>
-<span class="sourceLineNo">219</span>                }<a name="line.219"></a>
-<span class="sourceLineNo">220</span>            } catch (Exception exception) {<a name="line.220"></a>
-<span class="sourceLineNo">221</span>                log.error(exception.getMessage(), exception);<a name="line.221"></a>
-<span class="sourceLineNo">222</span>            }<a name="line.222"></a>
-<span class="sourceLineNo">223</span>        }<a name="line.223"></a>
-<span class="sourceLineNo">224</span><a name="line.224"></a>
-<span class="sourceLineNo">225</span>        return ports;<a name="line.225"></a>
-<span class="sourceLineNo">226</span>    }<a name="line.226"></a>
-<span class="sourceLineNo">227</span><a name="line.227"></a>
-<span class="sourceLineNo">228</span>    public Set&lt;String&gt; getProducts(InetAddress key) {<a name="line.228"></a>
-<span class="sourceLineNo">229</span>        Set&lt;String&gt; products = new LinkedHashSet&lt;&gt;();<a name="line.229"></a>
-<span class="sourceLineNo">230</span>        Document document = get(key);<a name="line.230"></a>
+<span class="sourceLineNo">217</span>        return ports;<a name="line.217"></a>
+<span class="sourceLineNo">218</span>    }<a name="line.218"></a>
+<span class="sourceLineNo">219</span><a name="line.219"></a>
+<span class="sourceLineNo">220</span>    public Set&lt;String&gt; getProducts(InetAddress key) {<a name="line.220"></a>
+<span class="sourceLineNo">221</span>        Set&lt;String&gt; products = new LinkedHashSet&lt;&gt;();<a name="line.221"></a>
+<span class="sourceLineNo">222</span>        NodeList list =<a name="line.222"></a>
+<span class="sourceLineNo">223</span>            (NodeList)<a name="line.223"></a>
+<span class="sourceLineNo">224</span>            get(key, "/nmaprun/host/ports/port/service/@product", NODESET);<a name="line.224"></a>
+<span class="sourceLineNo">225</span><a name="line.225"></a>
+<span class="sourceLineNo">226</span>        if (list != null) {<a name="line.226"></a>
+<span class="sourceLineNo">227</span>            for (int i = 0; i &lt; list.getLength(); i += 1) {<a name="line.227"></a>
+<span class="sourceLineNo">228</span>                products.add(list.item(i).getNodeValue());<a name="line.228"></a>
+<span class="sourceLineNo">229</span>            }<a name="line.229"></a>
+<span class="sourceLineNo">230</span>        }<a name="line.230"></a>
 <span class="sourceLineNo">231</span><a name="line.231"></a>
-<span class="sourceLineNo">232</span>        if (document != null) {<a name="line.232"></a>
-<span class="sourceLineNo">233</span>            try {<a name="line.233"></a>
-<span class="sourceLineNo">234</span>                XPathExpression expression =<a name="line.234"></a>
-<span class="sourceLineNo">235</span>                    xpath.compile("/nmaprun/host/ports/port/service/@product");<a name="line.235"></a>
-<span class="sourceLineNo">236</span>                NodeList list =<a name="line.236"></a>
-<span class="sourceLineNo">237</span>                    (NodeList) expression.evaluate(document, NODESET);<a name="line.237"></a>
-<span class="sourceLineNo">238</span><a name="line.238"></a>
-<span class="sourceLineNo">239</span>                for (int i = 0; i &lt; list.getLength(); i += 1) {<a name="line.239"></a>
-<span class="sourceLineNo">240</span>                    products.add(list.item(i).getNodeValue());<a name="line.240"></a>
-<span class="sourceLineNo">241</span>                }<a name="line.241"></a>
-<span class="sourceLineNo">242</span>            } catch (Exception exception) {<a name="line.242"></a>
-<span class="sourceLineNo">243</span>                log.error(exception.getMessage(), exception);<a name="line.243"></a>
-<span class="sourceLineNo">244</span>            }<a name="line.244"></a>
-<span class="sourceLineNo">245</span>        }<a name="line.245"></a>
+<span class="sourceLineNo">232</span>        return products;<a name="line.232"></a>
+<span class="sourceLineNo">233</span>    }<a name="line.233"></a>
+<span class="sourceLineNo">234</span><a name="line.234"></a>
+<span class="sourceLineNo">235</span>    private Duration getOutputAge(InetAddress key) {<a name="line.235"></a>
+<span class="sourceLineNo">236</span>        long start = 0;<a name="line.236"></a>
+<span class="sourceLineNo">237</span>        Number number =<a name="line.237"></a>
+<span class="sourceLineNo">238</span>            (Number) get(key, "/nmaprun/runstats/finished/@time", NUMBER);<a name="line.238"></a>
+<span class="sourceLineNo">239</span><a name="line.239"></a>
+<span class="sourceLineNo">240</span>        if (number != null) {<a name="line.240"></a>
+<span class="sourceLineNo">241</span>            start = number.longValue();<a name="line.241"></a>
+<span class="sourceLineNo">242</span>        }<a name="line.242"></a>
+<span class="sourceLineNo">243</span><a name="line.243"></a>
+<span class="sourceLineNo">244</span>        return Duration.between(Instant.ofEpochSecond(start), Instant.now());<a name="line.244"></a>
+<span class="sourceLineNo">245</span>    }<a name="line.245"></a>
 <span class="sourceLineNo">246</span><a name="line.246"></a>
-<span class="sourceLineNo">247</span>        return products;<a name="line.247"></a>
-<span class="sourceLineNo">248</span>    }<a name="line.248"></a>
-<span class="sourceLineNo">249</span><a name="line.249"></a>
-<span class="sourceLineNo">250</span>    private Duration getOutputAge(InetAddress key) {<a name="line.250"></a>
-<span class="sourceLineNo">251</span>        Document document = get(key);<a name="line.251"></a>
-<span class="sourceLineNo">252</span>        long start = 0;<a name="line.252"></a>
-<span class="sourceLineNo">253</span><a name="line.253"></a>
-<span class="sourceLineNo">254</span>        if (document != null) {<a name="line.254"></a>
-<span class="sourceLineNo">255</span>            try {<a name="line.255"></a>
-<span class="sourceLineNo">256</span>                XPathExpression expression =<a name="line.256"></a>
-<span class="sourceLineNo">257</span>                    xpath.compile("/nmaprun/runstats/finished/@time");<a name="line.257"></a>
+<span class="sourceLineNo">247</span>    private Object get(InetAddress key, String expression, QName qname) {<a name="line.247"></a>
+<span class="sourceLineNo">248</span>        Object object = null;<a name="line.248"></a>
+<span class="sourceLineNo">249</span>        Document document = get(key);<a name="line.249"></a>
+<span class="sourceLineNo">250</span><a name="line.250"></a>
+<span class="sourceLineNo">251</span>        if (document != null) {<a name="line.251"></a>
+<span class="sourceLineNo">252</span>            try {<a name="line.252"></a>
+<span class="sourceLineNo">253</span>                object = xpath.compile(expression).evaluate(document, qname);<a name="line.253"></a>
+<span class="sourceLineNo">254</span>            } catch (Exception exception) {<a name="line.254"></a>
+<span class="sourceLineNo">255</span>                log.error(exception.getMessage(), exception);<a name="line.255"></a>
+<span class="sourceLineNo">256</span>            }<a name="line.256"></a>
+<span class="sourceLineNo">257</span>        }<a name="line.257"></a>
 <span class="sourceLineNo">258</span><a name="line.258"></a>
-<span class="sourceLineNo">259</span>                 start =<a name="line.259"></a>
-<span class="sourceLineNo">260</span>                    ((Number) expression.evaluate(get(key), NUMBER))<a name="line.260"></a>
-<span class="sourceLineNo">261</span>                    .longValue();<a name="line.261"></a>
-<span class="sourceLineNo">262</span>            } catch (Exception exception) {<a name="line.262"></a>
-<span class="sourceLineNo">263</span>                log.error(exception.getMessage(), exception);<a name="line.263"></a>
-<span class="sourceLineNo">264</span>            }<a name="line.264"></a>
-<span class="sourceLineNo">265</span>        }<a name="line.265"></a>
-<span class="sourceLineNo">266</span><a name="line.266"></a>
-<span class="sourceLineNo">267</span>        return Duration.between(Instant.ofEpochSecond(start), Instant.now());<a name="line.267"></a>
-<span class="sourceLineNo">268</span>    }<a name="line.268"></a>
-<span class="sourceLineNo">269</span><a name="line.269"></a>
-<span class="sourceLineNo">270</span>    @RequiredArgsConstructor @EqualsAndHashCode @ToString<a name="line.270"></a>
-<span class="sourceLineNo">271</span>    private class Worker implements Runnable {<a name="line.271"></a>
-<span class="sourceLineNo">272</span>        private final InetAddress key;<a name="line.272"></a>
-<span class="sourceLineNo">273</span><a name="line.273"></a>
-<span class="sourceLineNo">274</span>        @Override<a name="line.274"></a>
-<span class="sourceLineNo">275</span>        public void run() {<a name="line.275"></a>
-<span class="sourceLineNo">276</span>            try {<a name="line.276"></a>
-<span class="sourceLineNo">277</span>                List&lt;String&gt; argv = NMAP_ARGV.stream().collect(toList());<a name="line.277"></a>
+<span class="sourceLineNo">259</span>        return object;<a name="line.259"></a>
+<span class="sourceLineNo">260</span>    }<a name="line.260"></a>
+<span class="sourceLineNo">261</span><a name="line.261"></a>
+<span class="sourceLineNo">262</span>    @RequiredArgsConstructor @EqualsAndHashCode @ToString<a name="line.262"></a>
+<span class="sourceLineNo">263</span>    private class Worker implements Runnable {<a name="line.263"></a>
+<span class="sourceLineNo">264</span>        private final InetAddress key;<a name="line.264"></a>
+<span class="sourceLineNo">265</span><a name="line.265"></a>
+<span class="sourceLineNo">266</span>        @Override<a name="line.266"></a>
+<span class="sourceLineNo">267</span>        public void run() {<a name="line.267"></a>
+<span class="sourceLineNo">268</span>            try {<a name="line.268"></a>
+<span class="sourceLineNo">269</span>                List&lt;String&gt; argv = NMAP_ARGV.stream().collect(toList());<a name="line.269"></a>
+<span class="sourceLineNo">270</span><a name="line.270"></a>
+<span class="sourceLineNo">271</span>                if (key instanceof Inet4Address) {<a name="line.271"></a>
+<span class="sourceLineNo">272</span>                    argv.add("-4");<a name="line.272"></a>
+<span class="sourceLineNo">273</span>                } else if (key instanceof Inet6Address) {<a name="line.273"></a>
+<span class="sourceLineNo">274</span>                    argv.add("-6");<a name="line.274"></a>
+<span class="sourceLineNo">275</span>                }<a name="line.275"></a>
+<span class="sourceLineNo">276</span><a name="line.276"></a>
+<span class="sourceLineNo">277</span>                argv.add(key.getHostAddress());<a name="line.277"></a>
 <span class="sourceLineNo">278</span><a name="line.278"></a>
-<span class="sourceLineNo">279</span>                if (key instanceof Inet4Address) {<a name="line.279"></a>
-<span class="sourceLineNo">280</span>                    argv.add("-4");<a name="line.280"></a>
-<span class="sourceLineNo">281</span>                } else if (key instanceof Inet6Address) {<a name="line.281"></a>
-<span class="sourceLineNo">282</span>                    argv.add("-6");<a name="line.282"></a>
-<span class="sourceLineNo">283</span>                }<a name="line.283"></a>
-<span class="sourceLineNo">284</span><a name="line.284"></a>
-<span class="sourceLineNo">285</span>                argv.add(key.getHostAddress());<a name="line.285"></a>
-<span class="sourceLineNo">286</span><a name="line.286"></a>
-<span class="sourceLineNo">287</span>                DocumentBuilder builder = factory.newDocumentBuilder();<a name="line.287"></a>
-<span class="sourceLineNo">288</span>                Process process =<a name="line.288"></a>
-<span class="sourceLineNo">289</span>                    new ProcessBuilder(argv)<a name="line.289"></a>
-<span class="sourceLineNo">290</span>                    .inheritIO()<a name="line.290"></a>
-<span class="sourceLineNo">291</span>                    .redirectOutput(PIPE)<a name="line.291"></a>
-<span class="sourceLineNo">292</span>                    .start();<a name="line.292"></a>
-<span class="sourceLineNo">293</span><a name="line.293"></a>
-<span class="sourceLineNo">294</span>                try (InputStream in = process.getInputStream()) {<a name="line.294"></a>
-<span class="sourceLineNo">295</span>                    put(key, builder.parse(in));<a name="line.295"></a>
-<span class="sourceLineNo">296</span><a name="line.296"></a>
-<span class="sourceLineNo">297</span>                    int status = process.waitFor();<a name="line.297"></a>
-<span class="sourceLineNo">298</span><a name="line.298"></a>
-<span class="sourceLineNo">299</span>                    if (status != 0) {<a name="line.299"></a>
-<span class="sourceLineNo">300</span>                        throw new IOException(argv + " returned exit status "<a name="line.300"></a>
-<span class="sourceLineNo">301</span>                                              + status);<a name="line.301"></a>
-<span class="sourceLineNo">302</span>                    }<a name="line.302"></a>
-<span class="sourceLineNo">303</span>                }<a name="line.303"></a>
-<span class="sourceLineNo">304</span>            } catch (Exception exception) {<a name="line.304"></a>
-<span class="sourceLineNo">305</span>                remove(key);<a name="line.305"></a>
-<span class="sourceLineNo">306</span>                log.error(exception.getMessage(), exception);<a name="line.306"></a>
-<span class="sourceLineNo">307</span>            }<a name="line.307"></a>
-<span class="sourceLineNo">308</span>        }<a name="line.308"></a>
-<span class="sourceLineNo">309</span>    }<a name="line.309"></a>
-<span class="sourceLineNo">310</span>}<a name="line.310"></a>
+<span class="sourceLineNo">279</span>                DocumentBuilder builder = factory.newDocumentBuilder();<a name="line.279"></a>
+<span class="sourceLineNo">280</span>                Process process =<a name="line.280"></a>
+<span class="sourceLineNo">281</span>                    new ProcessBuilder(argv)<a name="line.281"></a>
+<span class="sourceLineNo">282</span>                    .inheritIO()<a name="line.282"></a>
+<span class="sourceLineNo">283</span>                    .redirectOutput(PIPE)<a name="line.283"></a>
+<span class="sourceLineNo">284</span>                    .start();<a name="line.284"></a>
+<span class="sourceLineNo">285</span><a name="line.285"></a>
+<span class="sourceLineNo">286</span>                try (InputStream in = process.getInputStream()) {<a name="line.286"></a>
+<span class="sourceLineNo">287</span>                    put(key, builder.parse(in));<a name="line.287"></a>
+<span class="sourceLineNo">288</span><a name="line.288"></a>
+<span class="sourceLineNo">289</span>                    int status = process.waitFor();<a name="line.289"></a>
+<span class="sourceLineNo">290</span><a name="line.290"></a>
+<span class="sourceLineNo">291</span>                    if (status != 0) {<a name="line.291"></a>
+<span class="sourceLineNo">292</span>                        throw new IOException(argv + " returned exit status "<a name="line.292"></a>
+<span class="sourceLineNo">293</span>                                              + status);<a name="line.293"></a>
+<span class="sourceLineNo">294</span>                    }<a name="line.294"></a>
+<span class="sourceLineNo">295</span>                }<a name="line.295"></a>
+<span class="sourceLineNo">296</span>            } catch (Exception exception) {<a name="line.296"></a>
+<span class="sourceLineNo">297</span>                remove(key);<a name="line.297"></a>
+<span class="sourceLineNo">298</span>                log.error(exception.getMessage(), exception);<a name="line.298"></a>
+<span class="sourceLineNo">299</span>            }<a name="line.299"></a>
+<span class="sourceLineNo">300</span>        }<a name="line.300"></a>
+<span class="sourceLineNo">301</span>    }<a name="line.301"></a>
+<span class="sourceLineNo">302</span>}<a name="line.302"></a>
 
 
 
