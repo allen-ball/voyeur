@@ -41,6 +41,7 @@ import java.util.TreeSet;
 import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -48,7 +49,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -205,20 +205,12 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
 
     public Set<Integer> getPorts(InetAddress key) {
         Set<Integer> ports = new TreeSet<>();
-        Document document = get(key);
+        NodeList list =
+            (NodeList) get(key, "/nmaprun/host/ports/port/@portid", NODESET);
 
-        if (document != null) {
-            try {
-                XPathExpression expression =
-                    xpath.compile("/nmaprun/host/ports/port/@portid");
-                NodeList list =
-                    (NodeList) expression.evaluate(document, NODESET);
-
-                for (int i = 0; i < list.getLength(); i += 1) {
-                    ports.add(Integer.parseInt(list.item(i).getNodeValue()));
-                }
-            } catch (Exception exception) {
-                log.error(exception.getMessage(), exception);
+        if (list != null) {
+            for (int i = 0; i < list.getLength(); i += 1) {
+                ports.add(Integer.parseInt(list.item(i).getNodeValue()));
             }
         }
 
@@ -227,20 +219,13 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
 
     public Set<String> getProducts(InetAddress key) {
         Set<String> products = new LinkedHashSet<>();
-        Document document = get(key);
+        NodeList list =
+            (NodeList)
+            get(key, "/nmaprun/host/ports/port/service/@product", NODESET);
 
-        if (document != null) {
-            try {
-                XPathExpression expression =
-                    xpath.compile("/nmaprun/host/ports/port/service/@product");
-                NodeList list =
-                    (NodeList) expression.evaluate(document, NODESET);
-
-                for (int i = 0; i < list.getLength(); i += 1) {
-                    products.add(list.item(i).getNodeValue());
-                }
-            } catch (Exception exception) {
-                log.error(exception.getMessage(), exception);
+        if (list != null) {
+            for (int i = 0; i < list.getLength(); i += 1) {
+                products.add(list.item(i).getNodeValue());
             }
         }
 
@@ -248,23 +233,30 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
     }
 
     private Duration getOutputAge(InetAddress key) {
-        Document document = get(key);
         long start = 0;
+        Number number =
+            (Number) get(key, "/nmaprun/runstats/finished/@time", NUMBER);
+
+        if (number != null) {
+            start = number.longValue();
+        }
+
+        return Duration.between(Instant.ofEpochSecond(start), Instant.now());
+    }
+
+    private Object get(InetAddress key, String expression, QName qname) {
+        Object object = null;
+        Document document = get(key);
 
         if (document != null) {
             try {
-                XPathExpression expression =
-                    xpath.compile("/nmaprun/runstats/finished/@time");
-
-                 start =
-                    ((Number) expression.evaluate(get(key), NUMBER))
-                    .longValue();
+                object = xpath.compile(expression).evaluate(document, qname);
             } catch (Exception exception) {
                 log.error(exception.getMessage(), exception);
             }
         }
 
-        return Duration.between(Instant.ofEpochSecond(start), Instant.now());
+        return object;
     }
 
     @RequiredArgsConstructor @EqualsAndHashCode @ToString
