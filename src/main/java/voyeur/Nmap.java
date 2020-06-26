@@ -198,7 +198,7 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
         transformer.transform(new DOMSource(get(InetAddress.getByName(ip))),
                               new StreamResult(out));
 
-        return out.toString("UTF-8");
+        return out.toString(UTF_8.name());
     }
 
     public boolean isDisabled() { return disabled; }
