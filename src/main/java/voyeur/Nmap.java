@@ -124,7 +124,7 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
         try {
             List<String> argv = Stream.of(NMAP, "-version").collect(toList());
 
-            log.info(String.valueOf(argv));
+            log.info("{}", argv);
 
             Process process =
                 new ProcessBuilder(argv)
@@ -135,7 +135,7 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
             try (InputStream in = process.getInputStream()) {
                 new BufferedReader(new InputStreamReader(in, UTF_8))
                     .lines()
-                    .forEach(t -> log.info(t));
+                    .forEach(t -> log.info("{}", t));
             }
 
             disabled = (process.waitFor() != 0);
@@ -186,7 +186,7 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
                     .map(Worker::new)
                     .forEach(t -> executor.execute(t));
             } catch (Exception exception) {
-                log.error(exception.getMessage(), exception);
+                log.error("{}", exception.getMessage(), exception);
             }
         }
     }
@@ -252,7 +252,7 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
             try {
                 object = xpath.compile(expression).evaluate(document, qname);
             } catch (Exception exception) {
-                log.error(exception.getMessage(), exception);
+                log.error("{}", exception.getMessage(), exception);
             }
         }
 
@@ -295,7 +295,7 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
                 }
             } catch (Exception exception) {
                 remove(key);
-                log.error(exception.getMessage(), exception);
+                log.error("{}", exception.getMessage(), exception);
             }
         }
     }

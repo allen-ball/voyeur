@@ -82,7 +82,7 @@ public class ARPCache extends InetAddressMap<HardwareAddress> {
                     keySet().retainAll(map.keySet());
                 }
             } catch (Exception exception) {
-                log.error(exception.getMessage(), exception);
+                log.error("{}", exception.getMessage(), exception);
             }
         }
     }
