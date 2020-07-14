@@ -53,7 +53,7 @@
     </license>
   </licenses>
   <properties>
-    <jse.release>1.8</jse.release>
+    <jse.release>8</jse.release>
     <start-class>voyeur.Launcher</start-class>
   </properties>
   <dependencies verbose="true">
