@@ -21,7 +21,7 @@ package voyeur;
  * ##########################################################################
  */
 import ball.upnp.ssdp.SSDPDiscoveryCache;
-import ball.upnp.ssdp.SSDPDiscoveryThread;
+import ball.upnp.ssdp.SSDPDiscoveryService;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import lombok.NoArgsConstructor;
@@ -41,10 +41,7 @@ public class SSDP extends SSDPDiscoveryCache {
 
     @PostConstruct
     public void init() throws Exception {
-        SSDPDiscoveryThread thread = new SSDPDiscoveryThread(60);
-
-        thread.addListener(this);
-        thread.start();
+        new SSDPDiscoveryService().addListener(this).discover(60);
     }
 
     @PreDestroy
