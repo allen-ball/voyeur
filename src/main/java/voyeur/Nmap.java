@@ -30,8 +30,10 @@ import java.io.InputStreamReader;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
+import java.net.SocketAddress;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.LinkedHashSet;
@@ -177,7 +179,8 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
                     .stream()
                     .map(SSDP.Value::getSSDPMessage)
                     .filter(t -> t instanceof SSDPResponse)
-                    .map(t -> ((SSDPResponse) t).getInetAddress())
+                    .map(t -> ((SSDPResponse) t).getSocketAddress())
+                    .map(t -> ((InetSocketAddress) t).getAddress())
                     .forEach(t -> putIfAbsent(t, empty));
 
                 keySet()
