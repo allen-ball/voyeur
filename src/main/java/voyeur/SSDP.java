@@ -41,7 +41,7 @@ public class SSDP extends SSDPDiscoveryCache {
 
     @PostConstruct
     public void init() throws Exception {
-        new SSDPDiscoveryService().addListener(this).discover(60);
+        new SSDPDiscoveryService().addListener(this);
     }
 
     @PreDestroy
