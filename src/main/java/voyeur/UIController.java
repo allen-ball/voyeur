@@ -60,7 +60,6 @@ public class UIController extends AbstractController {
         Map<URI,List<URI>> map =
             ssdp().values()
             .stream()
-            .map(SSDP.Value::getSSDPMessage)
             .collect(groupingBy(SSDPMessage::getLocation,
                                 ConcurrentSkipListMap::new,
                                 mapping(SSDPMessage::getUSN, toList())));

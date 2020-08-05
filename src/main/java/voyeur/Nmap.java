@@ -177,7 +177,6 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
 
                 ssdp.values()
                     .stream()
-                    .map(SSDP.Value::getSSDPMessage)
                     .filter(t -> t instanceof SSDPResponse)
                     .map(t -> ((SSDPResponse) t).getSocketAddress())
                     .map(t -> ((InetSocketAddress) t).getAddress())

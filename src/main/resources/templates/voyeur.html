@@ -75,14 +75,14 @@
         <table>
           <tbody>
             <tr th:each="entry : ${ssdp}">
-              <td th:object="${entry.value.SSDPMessage}">
+              <td>
                 <p><code th:text="${entry.key}"/></p>
-                <p th:with="href = @{*{location}}">
+                <p th:with="href = @{${entry.value.location}}">
                   <a th:href="${href}" th:target="_newtab">
                     <code th:text="${href}"/>
                   </a>
                 </p>
-                <p><pre th:text="*{toString().trim()}"/></p>
+                <p><pre th:text="${entry.value.toString().trim()}"/></p>
               </td>
             </tr>
           </tbody>

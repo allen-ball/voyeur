@@ -26,6 +26,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
@@ -37,11 +38,13 @@ import org.springframework.stereotype.Service;
 @Service
 @NoArgsConstructor @Log4j2
 public class SSDP extends SSDPDiscoveryCache {
-    private static final long serialVersionUID = -5185389976118221985L;
+    private static final long serialVersionUID = 881598533396699066L;
+
+    private @Value("${ssdp.product}") String product = null;
 
     @PostConstruct
     public void init() throws Exception {
-        new SSDPDiscoveryService().addListener(this);
+        new SSDPDiscoveryService(product).addListener(this);
     }
 
     @PreDestroy
