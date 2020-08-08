@@ -32,6 +32,8 @@ import org.springframework.stereotype.Service;
 /**
  * {@link SSDPDiscoveryCache} {@link Service}.
  *
+ * {@injected.fields}
+ *
  * @author {@link.uri mailto:ball@hcf.dev Allen D. Ball}
  * @version $Revision$
  */
@@ -40,7 +42,7 @@ import org.springframework.stereotype.Service;
 public class SSDP extends SSDPDiscoveryCache {
     private static final long serialVersionUID = 881598533396699066L;
 
-    private @Value("${ssdp.product}") String product = null;
+    @Value("${ssdp.product}") private String product = null;
 
     @PostConstruct
     public void init() throws Exception {
