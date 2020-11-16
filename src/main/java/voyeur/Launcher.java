@@ -27,6 +27,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.ApplicationContext;
 
 /**
  * {@link SpringApplication} {@link Launcher}.
@@ -37,6 +38,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 @SpringBootApplication
 @NoArgsConstructor @ToString @Log4j2
 public class Launcher extends SpringBootServletInitializer {
+    private static ApplicationContext context = null;
 
     /**
      * Standard {@link SpringApplication} {@code main(String[])}
@@ -48,13 +50,11 @@ public class Launcher extends SpringBootServletInitializer {
      *                          {@link Exception}.
      */
     public static void main(String[] argv) throws Exception {
-        SpringApplication application = new SpringApplication(Launcher.class);
-
-        application.run(argv);
+        context = SpringApplication.run(Launcher.class, argv);
     }
 
     @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(Launcher.class);
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+        return builder.sources(Launcher.class);
     }
 }
