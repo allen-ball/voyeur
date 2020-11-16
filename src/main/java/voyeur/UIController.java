@@ -34,7 +34,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.mapping;
@@ -48,7 +47,7 @@ import static java.util.stream.Collectors.toList;
  * @author {@link.uri mailto:ball@hcf.dev Allen D. Ball}
  * @version $Revision$
  */
-@Controller @EnableWebMvc
+@Controller
 @NoArgsConstructor @ToString @Log4j2
 public class UIController extends AbstractController {
     @Autowired private SSDP ssdp = null;
