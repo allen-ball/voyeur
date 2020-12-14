@@ -22,7 +22,6 @@ package voyeur;
  */
 import ball.annotation.CompileTimeCheck;
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.nio.file.Files;
@@ -74,8 +73,7 @@ public class ARPCache extends InetAddressMap<HardwareAddress> {
     public void update() {
         if (! isDisabled()) {
             try {
-                ARPCache map =
-                    Files.exists(PATH) ? parse(PATH) : parse(BUILDER);
+                var map = Files.exists(PATH) ? parse(PATH) : parse(BUILDER);
 
                 if (map != null) {
                     putAll(map);
@@ -90,7 +88,7 @@ public class ARPCache extends InetAddressMap<HardwareAddress> {
     public boolean isDisabled() { return disabled; }
 
     private ARPCache parse(Path path) throws Exception {
-        ARPCache map =
+        var map =
             Files.lines(path, UTF_8)
             .skip(1)
             .map(t -> t.split("[\\p{Space}]+"))
@@ -105,9 +103,9 @@ public class ARPCache extends InetAddressMap<HardwareAddress> {
         ARPCache map = null;
 
         try {
-            Process process = builder.start();
+            var process = builder.start();
 
-            try (InputStream in = process.getInputStream()) {
+            try (var in = process.getInputStream()) {
                 map =
                     new BufferedReader(new InputStreamReader(in, UTF_8))
                     .lines()
@@ -122,7 +120,6 @@ public class ARPCache extends InetAddressMap<HardwareAddress> {
         } catch (Exception exception) {
             disabled = true;
         }
-
 
         if (disabled) {
             log.warn("arp command is not available");

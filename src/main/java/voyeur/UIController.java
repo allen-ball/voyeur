@@ -57,7 +57,7 @@ public class UIController extends AbstractController {
 
     @ModelAttribute("upnp")
     public Map<URI,List<URI>> upnp() {
-        Map<URI,List<URI>> map =
+        var map =
             ssdp().values()
             .stream()
             .collect(groupingBy(SSDPMessage::getLocation,

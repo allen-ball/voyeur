@@ -23,7 +23,6 @@ package voyeur;
 import java.net.NetworkInterface;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.concurrent.ConcurrentSkipListSet;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -39,8 +38,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @Log4j2
-public class NetworkInterfaces
-             extends ConcurrentSkipListSet<NetworkInterface> {
+public class NetworkInterfaces extends ConcurrentSkipListSet<NetworkInterface> {
     private static final long serialVersionUID = -7886800390686536953L;
 
     private static final Comparator<NetworkInterface> COMPARATOR =
@@ -50,7 +48,7 @@ public class NetworkInterfaces
         .thenComparingInt(t -> t.getIndex());
 
     private static boolean isLoopback(NetworkInterface ni) {
-        boolean isLoopback = false;
+        var isLoopback = false;
 
         try {
             isLoopback = ni.isLoopback();
@@ -68,8 +66,7 @@ public class NetworkInterfaces
     @EventListener(ApplicationReadyEvent.class)
     @Scheduled(fixedDelay = 60 * 1000)
     public void update() throws Exception {
-        List<NetworkInterface> list =
-            Collections.list(NetworkInterface.getNetworkInterfaces());
+        var list = Collections.list(NetworkInterface.getNetworkInterfaces());
 
         addAll(list);
         retainAll(list);

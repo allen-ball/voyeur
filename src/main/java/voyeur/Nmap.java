@@ -25,7 +25,6 @@ import ball.xml.XalanConstants;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -44,7 +43,6 @@ import java.util.stream.Stream;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -124,17 +122,17 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
                                       String.valueOf(2));
 
         try {
-            List<String> argv = Stream.of(NMAP, "-version").collect(toList());
+            var argv = Stream.of(NMAP, "-version").collect(toList());
 
             log.info("{}", argv);
 
-            Process process =
+            var process =
                 new ProcessBuilder(argv)
                 .inheritIO()
                 .redirectOutput(PIPE)
                 .start();
 
-            try (InputStream in = process.getInputStream()) {
+            try (var in = process.getInputStream()) {
                 new BufferedReader(new InputStreamReader(in, UTF_8))
                     .lines()
                     .forEach(t -> log.info("{}", t));
@@ -158,7 +156,7 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
     public void update() {
         if (! isDisabled()) {
             try {
-                Document empty = factory.newDocumentBuilder().newDocument();
+                var empty = factory.newDocumentBuilder().newDocument();
 
                 empty.appendChild(empty.createElement("nmaprun"));
 
@@ -195,7 +193,7 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
 
     @RequestMapping(value = { "{ip}.xml" })
     public String nmap(@PathVariable String ip) throws Exception {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        var out = new ByteArrayOutputStream();
 
         transformer.transform(new DOMSource(get(InetAddress.getByName(ip))),
                               new StreamResult(out));
@@ -206,9 +204,8 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
     public boolean isDisabled() { return disabled; }
 
     public Set<Integer> getPorts(InetAddress key) {
-        Set<Integer> ports = new TreeSet<>();
-        NodeList list =
-            (NodeList) get(key, "/nmaprun/host/ports/port/@portid", NODESET);
+        var ports = new TreeSet<Integer>();
+        var list = (NodeList) get(key, "/nmaprun/host/ports/port/@portid", NODESET);
 
         if (list != null) {
             for (int i = 0; i < list.getLength(); i += 1) {
@@ -220,10 +217,8 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
     }
 
     public Set<String> getProducts(InetAddress key) {
-        Set<String> products = new LinkedHashSet<>();
-        NodeList list =
-            (NodeList)
-            get(key, "/nmaprun/host/ports/port/service/@product", NODESET);
+        var products = new LinkedHashSet<String>();
+        var list = (NodeList) get(key, "/nmaprun/host/ports/port/service/@product", NODESET);
 
         if (list != null) {
             for (int i = 0; i < list.getLength(); i += 1) {
@@ -236,8 +231,7 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
 
     private Duration getOutputAge(InetAddress key) {
         long start = 0;
-        Number number =
-            (Number) get(key, "/nmaprun/runstats/finished/@time", NUMBER);
+        var number = (Number) get(key, "/nmaprun/runstats/finished/@time", NUMBER);
 
         if (number != null) {
             start = number.longValue();
@@ -248,7 +242,7 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
 
     private Object get(InetAddress key, String expression, QName qname) {
         Object object = null;
-        Document document = get(key);
+        var document = get(key);
 
         if (document != null) {
             try {
@@ -268,7 +262,7 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
         @Override
         public void run() {
             try {
-                List<String> argv = NMAP_ARGV.stream().collect(toList());
+                var argv = NMAP_ARGV.stream().collect(toList());
 
                 if (key instanceof Inet4Address) {
                     argv.add("-4");
@@ -278,14 +272,14 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
 
                 argv.add(key.getHostAddress());
 
-                DocumentBuilder builder = factory.newDocumentBuilder();
-                Process process =
+                var builder = factory.newDocumentBuilder();
+                var process =
                     new ProcessBuilder(argv)
                     .inheritIO()
                     .redirectOutput(PIPE)
                     .start();
 
-                try (InputStream in = process.getInputStream()) {
+                try (var in = process.getInputStream()) {
                     put(key, builder.parse(in));
 
                     int status = process.waitFor();
