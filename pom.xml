@@ -36,6 +36,11 @@
     <version>20210415.0</version>
     <relativePath/>
   </parent>
+  <organization>
+    <name><![CDATA[<a href="mailto:ball@hcf.dev">Allen D. Ball</a>]]></name>
+    <url>https://github.com/allen-ball/voyeur</url>
+  </organization>
+  <inceptionYear>2019</inceptionYear>
   <repositories>
     <repository>
       <id>repo.hcf.dev-RELEASE</id>
@@ -44,7 +49,6 @@
       <layout>default</layout>
     </repository>
   </repositories>
-  <inceptionYear>2019</inceptionYear>
   <licenses>
     <license>
       <name>Apache-2.0</name>
