@@ -2,8 +2,6 @@ package voyeur;
 /*-
  * ##########################################################################
  * Local Area Network Voyeur
- * $Id$
- * $HeadURL$
  * %%
  * Copyright (C) 2019 - 2021 Allen D. Ball
  * %%
@@ -83,7 +81,6 @@ import static javax.xml.xpath.XPathConstants.NUMBER;
  * {@injected.fields}
  *
  * @author {@link.uri mailto:ball@hcf.dev Allen D. Ball}
- * @version $Revision$
  */
 @RestController
 @RequestMapping(value = { "/network/nmap/" },

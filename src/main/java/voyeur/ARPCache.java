@@ -2,8 +2,6 @@ package voyeur;
 /*-
  * ##########################################################################
  * Local Area Network Voyeur
- * $Id$
- * $HeadURL$
  * %%
  * Copyright (C) 2019 - 2021 Allen D. Ball
  * %%
@@ -46,7 +44,6 @@ import static java.util.stream.Collectors.toMap;
  * {@link java.util.Map}.
  *
  * @author {@link.uri mailto:ball@hcf.dev Allen D. Ball}
- * @version $Revision$
  */
 @Service
 @NoArgsConstructor @Log4j2

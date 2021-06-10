@@ -2,8 +2,6 @@ package voyeur;
 /*-
  * ##########################################################################
  * Local Area Network Voyeur
- * $Id$
- * $HeadURL$
  * %%
  * Copyright (C) 2019 - 2021 Allen D. Ball
  * %%

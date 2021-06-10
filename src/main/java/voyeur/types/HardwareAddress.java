@@ -2,8 +2,6 @@ package voyeur.types;
 /*-
  * ##########################################################################
  * Local Area Network Voyeur
- * $Id$
- * $HeadURL$
  * %%
  * Copyright (C) 2019 - 2021 Allen D. Ball
  * %%
@@ -31,7 +29,6 @@ import static java.util.stream.Collectors.joining;
  * Hardware Address.
  *
  * @author {@link.uri mailto:ball@hcf.dev Allen D. Ball}
- * @version $Revision$
  */
 public class HardwareAddress {
     private final ArrayList<Byte> list = new ArrayList<>();

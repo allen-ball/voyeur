@@ -2,8 +2,6 @@ package voyeur;
 /*-
  * ##########################################################################
  * Local Area Network Voyeur
- * $Id$
- * $HeadURL$
  * %%
  * Copyright (C) 2019 - 2021 Allen D. Ball
  * %%
@@ -29,7 +27,6 @@ import java.util.concurrent.ConcurrentSkipListMap;
  * {@link InetAddress} {@link java.util.Map} abstract base class.
  *
  * @author {@link.uri mailto:ball@hcf.dev Allen D. Ball}
- * @version $Revision$
  */
 public abstract class InetAddressMap<V>
                 extends ConcurrentSkipListMap<InetAddress,V> {
