@@ -39,7 +39,7 @@ import org.springframework.stereotype.Service;
 public class SSDP extends SSDPDiscoveryCache {
     private static final long serialVersionUID = 881598533396699066L;
 
-    @Value("${ssdp.product}") private String product = null;
+    /** @serial */ @Value("${ssdp.product}") private String product = null;
 
     @PostConstruct
     public void init() throws Exception {
