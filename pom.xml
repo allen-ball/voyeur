@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ##########################################################################
+  Local Area Network Voyeur
   %%
   Copyright (C) 2019 - 2021 Allen D. Ball
   %%
@@ -31,7 +32,7 @@
   <parent>
     <groupId>ball</groupId>
     <artifactId>parent</artifactId>
-    <version>20210602.1</version>
+    <version>20210611.0</version>
     <relativePath/>
   </parent>
   <organization>
@@ -39,6 +40,16 @@
     <url>https://github.com/allen-ball/voyeur</url>
   </organization>
   <inceptionYear>2019</inceptionYear>
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <url>https://github.com/allen-ball/voyeur</url>
+  </scm>
   <repositories>
     <repository>
       <id>repo.hcf.dev-RELEASE</id>
@@ -47,13 +58,12 @@
       <layout>default</layout>
     </repository>
   </repositories>
-  <licenses>
-    <license>
-      <name>Apache-2.0</name>
-      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>repo.hcf.dev-RELEASE</id>
+      <url>https://repo.hcf.dev/maven/release/</url>
+    </pluginRepository>
+  </pluginRepositories>
   <properties>
     <jse.target>11</jse.target>
     <start-class>voyeur.Launcher</start-class>

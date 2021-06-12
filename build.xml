@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ##########################################################################
+  Local Area Network Voyeur
   %%
   Copyright (C) 2019 - 2021 Allen D. Ball
   %%
@@ -29,7 +30,7 @@
 
   <resolver:resolve>
     <dependencies>
-      <dependency coords="ball:parent:20210602.1:xml:compile"/>
+      <dependency coords="ball:parent:20210611.0:xml:compile"/>
     </dependencies>
     <properties/>
   </resolver:resolve>
