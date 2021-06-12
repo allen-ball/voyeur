@@ -1,96 +1,94 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
 <title>Source code</title>
 <link rel="stylesheet" type="text/css" href="../../../stylesheet.css" title="Style">
 </head>
 <body>
+<main role="main">
 <div class="sourceContainer">
-<pre><span class="sourceLineNo">001</span>package voyeur.types;<a name="line.1"></a>
-<span class="sourceLineNo">002</span>/*-<a name="line.2"></a>
-<span class="sourceLineNo">003</span> * ##########################################################################<a name="line.3"></a>
-<span class="sourceLineNo">004</span> * Local Area Network Voyeur<a name="line.4"></a>
-<span class="sourceLineNo">005</span> * $Id$<a name="line.5"></a>
-<span class="sourceLineNo">006</span> * $HeadURL$<a name="line.6"></a>
-<span class="sourceLineNo">007</span> * %%<a name="line.7"></a>
-<span class="sourceLineNo">008</span> * Copyright (C) 2019 - 2020 Allen D. Ball<a name="line.8"></a>
-<span class="sourceLineNo">009</span> * %%<a name="line.9"></a>
-<span class="sourceLineNo">010</span> * Licensed under the Apache License, Version 2.0 (the "License");<a name="line.10"></a>
-<span class="sourceLineNo">011</span> * you may not use this file except in compliance with the License.<a name="line.11"></a>
-<span class="sourceLineNo">012</span> * You may obtain a copy of the License at<a name="line.12"></a>
-<span class="sourceLineNo">013</span> *<a name="line.13"></a>
-<span class="sourceLineNo">014</span> *      http://www.apache.org/licenses/LICENSE-2.0<a name="line.14"></a>
-<span class="sourceLineNo">015</span> *<a name="line.15"></a>
-<span class="sourceLineNo">016</span> * Unless required by applicable law or agreed to in writing, software<a name="line.16"></a>
-<span class="sourceLineNo">017</span> * distributed under the License is distributed on an "AS IS" BASIS,<a name="line.17"></a>
-<span class="sourceLineNo">018</span> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<a name="line.18"></a>
-<span class="sourceLineNo">019</span> * See the License for the specific language governing permissions and<a name="line.19"></a>
-<span class="sourceLineNo">020</span> * limitations under the License.<a name="line.20"></a>
-<span class="sourceLineNo">021</span> * ##########################################################################<a name="line.21"></a>
-<span class="sourceLineNo">022</span> */<a name="line.22"></a>
-<span class="sourceLineNo">023</span>import java.net.NetworkInterface;<a name="line.23"></a>
-<span class="sourceLineNo">024</span>import java.net.SocketException;<a name="line.24"></a>
-<span class="sourceLineNo">025</span>import java.util.ArrayList;<a name="line.25"></a>
-<span class="sourceLineNo">026</span>import java.util.stream.Stream;<a name="line.26"></a>
-<span class="sourceLineNo">027</span><a name="line.27"></a>
-<span class="sourceLineNo">028</span>import static java.util.stream.Collectors.joining;<a name="line.28"></a>
-<span class="sourceLineNo">029</span><a name="line.29"></a>
-<span class="sourceLineNo">030</span>/**<a name="line.30"></a>
-<span class="sourceLineNo">031</span> * Hardware Address.<a name="line.31"></a>
-<span class="sourceLineNo">032</span> *<a name="line.32"></a>
-<span class="sourceLineNo">033</span> * @author {@link.uri mailto:ball@hcf.dev Allen D. Ball}<a name="line.33"></a>
-<span class="sourceLineNo">034</span> * @version $Revision$<a name="line.34"></a>
-<span class="sourceLineNo">035</span> */<a name="line.35"></a>
-<span class="sourceLineNo">036</span>public class HardwareAddress {<a name="line.36"></a>
-<span class="sourceLineNo">037</span>    private final ArrayList&lt;Byte&gt; list = new ArrayList&lt;&gt;();<a name="line.37"></a>
-<span class="sourceLineNo">038</span><a name="line.38"></a>
-<span class="sourceLineNo">039</span>    /**<a name="line.39"></a>
-<span class="sourceLineNo">040</span>     * {@link NetworkInterface} constructor.<a name="line.40"></a>
-<span class="sourceLineNo">041</span>     *<a name="line.41"></a>
-<span class="sourceLineNo">042</span>     * @param   netif           The {@link NetworkInterface}.<a name="line.42"></a>
-<span class="sourceLineNo">043</span>     *<a name="line.43"></a>
-<span class="sourceLineNo">044</span>     * @throws  SocketException If the hardware address canoot be read.<a name="line.44"></a>
-<span class="sourceLineNo">045</span>     */<a name="line.45"></a>
-<span class="sourceLineNo">046</span>    public HardwareAddress(NetworkInterface netif) throws SocketException {<a name="line.46"></a>
-<span class="sourceLineNo">047</span>        this(netif.getHardwareAddress());<a name="line.47"></a>
-<span class="sourceLineNo">048</span>    }<a name="line.48"></a>
-<span class="sourceLineNo">049</span><a name="line.49"></a>
-<span class="sourceLineNo">050</span>    /**<a name="line.50"></a>
-<span class="sourceLineNo">051</span>     * {@link String} constructor.<a name="line.51"></a>
-<span class="sourceLineNo">052</span>     *<a name="line.52"></a>
-<span class="sourceLineNo">053</span>     * @param   string          The {@link String} representation.<a name="line.53"></a>
-<span class="sourceLineNo">054</span>     */<a name="line.54"></a>
-<span class="sourceLineNo">055</span>    public HardwareAddress(String string) {<a name="line.55"></a>
-<span class="sourceLineNo">056</span>        Stream.of(string.split("[:]"))<a name="line.56"></a>
-<span class="sourceLineNo">057</span>            .map(t -&gt; Integer.valueOf(t, 16))<a name="line.57"></a>
-<span class="sourceLineNo">058</span>            .map(t -&gt; t &amp; 0xFF)<a name="line.58"></a>
-<span class="sourceLineNo">059</span>            .forEach(t -&gt; list.add(t.byteValue()));<a name="line.59"></a>
-<span class="sourceLineNo">060</span>    }<a name="line.60"></a>
-<span class="sourceLineNo">061</span><a name="line.61"></a>
-<span class="sourceLineNo">062</span>    /**<a name="line.62"></a>
-<span class="sourceLineNo">063</span>     * {@code byte} array constructor.<a name="line.63"></a>
-<span class="sourceLineNo">064</span>     *<a name="line.64"></a>
-<span class="sourceLineNo">065</span>     * @param   bytes           The {@code byte} array representing the<a name="line.65"></a>
-<span class="sourceLineNo">066</span>     *                          hardware address.<a name="line.66"></a>
-<span class="sourceLineNo">067</span>     */<a name="line.67"></a>
-<span class="sourceLineNo">068</span>    public HardwareAddress(byte[] bytes) {<a name="line.68"></a>
-<span class="sourceLineNo">069</span>        if (bytes != null) {<a name="line.69"></a>
-<span class="sourceLineNo">070</span>            for (byte b : bytes) {<a name="line.70"></a>
-<span class="sourceLineNo">071</span>                list.add(b);<a name="line.71"></a>
-<span class="sourceLineNo">072</span>            }<a name="line.72"></a>
-<span class="sourceLineNo">073</span>        }<a name="line.73"></a>
-<span class="sourceLineNo">074</span>    }<a name="line.74"></a>
-<span class="sourceLineNo">075</span><a name="line.75"></a>
-<span class="sourceLineNo">076</span>    @Override<a name="line.76"></a>
-<span class="sourceLineNo">077</span>    public String toString() {<a name="line.77"></a>
-<span class="sourceLineNo">078</span>        String string =<a name="line.78"></a>
-<span class="sourceLineNo">079</span>            list.stream()<a name="line.79"></a>
-<span class="sourceLineNo">080</span>            .map(t -&gt; String.format("%02x", t))<a name="line.80"></a>
-<span class="sourceLineNo">081</span>            .collect(joining(":"));<a name="line.81"></a>
-<span class="sourceLineNo">082</span><a name="line.82"></a>
-<span class="sourceLineNo">083</span>        return string;<a name="line.83"></a>
-<span class="sourceLineNo">084</span>    }<a name="line.84"></a>
-<span class="sourceLineNo">085</span>}<a name="line.85"></a>
+<pre><span class="sourceLineNo">001</span><a id="line.1">package voyeur.types;</a>
+<span class="sourceLineNo">002</span><a id="line.2">/*-</a>
+<span class="sourceLineNo">003</span><a id="line.3"> * ##########################################################################</a>
+<span class="sourceLineNo">004</span><a id="line.4"> * Local Area Network Voyeur</a>
+<span class="sourceLineNo">005</span><a id="line.5"> * %%</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * Copyright (C) 2019 - 2021 Allen D. Ball</a>
+<span class="sourceLineNo">007</span><a id="line.7"> * %%</a>
+<span class="sourceLineNo">008</span><a id="line.8"> * Licensed under the Apache License, Version 2.0 (the "License");</a>
+<span class="sourceLineNo">009</span><a id="line.9"> * you may not use this file except in compliance with the License.</a>
+<span class="sourceLineNo">010</span><a id="line.10"> * You may obtain a copy of the License at</a>
+<span class="sourceLineNo">011</span><a id="line.11"> *</a>
+<span class="sourceLineNo">012</span><a id="line.12"> *      http://www.apache.org/licenses/LICENSE-2.0</a>
+<span class="sourceLineNo">013</span><a id="line.13"> *</a>
+<span class="sourceLineNo">014</span><a id="line.14"> * Unless required by applicable law or agreed to in writing, software</a>
+<span class="sourceLineNo">015</span><a id="line.15"> * distributed under the License is distributed on an "AS IS" BASIS,</a>
+<span class="sourceLineNo">016</span><a id="line.16"> * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</a>
+<span class="sourceLineNo">017</span><a id="line.17"> * See the License for the specific language governing permissions and</a>
+<span class="sourceLineNo">018</span><a id="line.18"> * limitations under the License.</a>
+<span class="sourceLineNo">019</span><a id="line.19"> * ##########################################################################</a>
+<span class="sourceLineNo">020</span><a id="line.20"> */</a>
+<span class="sourceLineNo">021</span><a id="line.21">import java.net.NetworkInterface;</a>
+<span class="sourceLineNo">022</span><a id="line.22">import java.net.SocketException;</a>
+<span class="sourceLineNo">023</span><a id="line.23">import java.util.ArrayList;</a>
+<span class="sourceLineNo">024</span><a id="line.24">import java.util.stream.Stream;</a>
+<span class="sourceLineNo">025</span><a id="line.25"></a>
+<span class="sourceLineNo">026</span><a id="line.26">import static java.util.stream.Collectors.joining;</a>
+<span class="sourceLineNo">027</span><a id="line.27"></a>
+<span class="sourceLineNo">028</span><a id="line.28">/**</a>
+<span class="sourceLineNo">029</span><a id="line.29"> * Hardware Address.</a>
+<span class="sourceLineNo">030</span><a id="line.30"> *</a>
+<span class="sourceLineNo">031</span><a id="line.31"> * @author {@link.uri mailto:ball@hcf.dev Allen D. Ball}</a>
+<span class="sourceLineNo">032</span><a id="line.32"> */</a>
+<span class="sourceLineNo">033</span><a id="line.33">public class HardwareAddress {</a>
+<span class="sourceLineNo">034</span><a id="line.34">    private final ArrayList&lt;Byte&gt; list = new ArrayList&lt;&gt;();</a>
+<span class="sourceLineNo">035</span><a id="line.35"></a>
+<span class="sourceLineNo">036</span><a id="line.36">    /**</a>
+<span class="sourceLineNo">037</span><a id="line.37">     * {@link NetworkInterface} constructor.</a>
+<span class="sourceLineNo">038</span><a id="line.38">     *</a>
+<span class="sourceLineNo">039</span><a id="line.39">     * @param   netif           The {@link NetworkInterface}.</a>
+<span class="sourceLineNo">040</span><a id="line.40">     *</a>
+<span class="sourceLineNo">041</span><a id="line.41">     * @throws  SocketException If the hardware address canoot be read.</a>
+<span class="sourceLineNo">042</span><a id="line.42">     */</a>
+<span class="sourceLineNo">043</span><a id="line.43">    public HardwareAddress(NetworkInterface netif) throws SocketException {</a>
+<span class="sourceLineNo">044</span><a id="line.44">        this(netif.getHardwareAddress());</a>
+<span class="sourceLineNo">045</span><a id="line.45">    }</a>
+<span class="sourceLineNo">046</span><a id="line.46"></a>
+<span class="sourceLineNo">047</span><a id="line.47">    /**</a>
+<span class="sourceLineNo">048</span><a id="line.48">     * {@link String} constructor.</a>
+<span class="sourceLineNo">049</span><a id="line.49">     *</a>
+<span class="sourceLineNo">050</span><a id="line.50">     * @param   string          The {@link String} representation.</a>
+<span class="sourceLineNo">051</span><a id="line.51">     */</a>
+<span class="sourceLineNo">052</span><a id="line.52">    public HardwareAddress(String string) {</a>
+<span class="sourceLineNo">053</span><a id="line.53">        Stream.of(string.split("[:]"))</a>
+<span class="sourceLineNo">054</span><a id="line.54">            .map(t -&gt; Integer.valueOf(t, 16))</a>
+<span class="sourceLineNo">055</span><a id="line.55">            .map(t -&gt; t &amp; 0xFF)</a>
+<span class="sourceLineNo">056</span><a id="line.56">            .forEach(t -&gt; list.add(t.byteValue()));</a>
+<span class="sourceLineNo">057</span><a id="line.57">    }</a>
+<span class="sourceLineNo">058</span><a id="line.58"></a>
+<span class="sourceLineNo">059</span><a id="line.59">    /**</a>
+<span class="sourceLineNo">060</span><a id="line.60">     * {@code byte} array constructor.</a>
+<span class="sourceLineNo">061</span><a id="line.61">     *</a>
+<span class="sourceLineNo">062</span><a id="line.62">     * @param   bytes           The {@code byte} array representing the</a>
+<span class="sourceLineNo">063</span><a id="line.63">     *                          hardware address.</a>
+<span class="sourceLineNo">064</span><a id="line.64">     */</a>
+<span class="sourceLineNo">065</span><a id="line.65">    public HardwareAddress(byte[] bytes) {</a>
+<span class="sourceLineNo">066</span><a id="line.66">        if (bytes != null) {</a>
+<span class="sourceLineNo">067</span><a id="line.67">            for (byte b : bytes) {</a>
+<span class="sourceLineNo">068</span><a id="line.68">                list.add(b);</a>
+<span class="sourceLineNo">069</span><a id="line.69">            }</a>
+<span class="sourceLineNo">070</span><a id="line.70">        }</a>
+<span class="sourceLineNo">071</span><a id="line.71">    }</a>
+<span class="sourceLineNo">072</span><a id="line.72"></a>
+<span class="sourceLineNo">073</span><a id="line.73">    @Override</a>
+<span class="sourceLineNo">074</span><a id="line.74">    public String toString() {</a>
+<span class="sourceLineNo">075</span><a id="line.75">        String string =</a>
+<span class="sourceLineNo">076</span><a id="line.76">            list.stream()</a>
+<span class="sourceLineNo">077</span><a id="line.77">            .map(t -&gt; String.format("%02x", t))</a>
+<span class="sourceLineNo">078</span><a id="line.78">            .collect(joining(":"));</a>
+<span class="sourceLineNo">079</span><a id="line.79"></a>
+<span class="sourceLineNo">080</span><a id="line.80">        return string;</a>
+<span class="sourceLineNo">081</span><a id="line.81">    }</a>
+<span class="sourceLineNo">082</span><a id="line.82">}</a>
 
 
 
@@ -153,5 +151,6 @@
 
 </pre>
 </div>
+</main>
 </body>
 </html>
