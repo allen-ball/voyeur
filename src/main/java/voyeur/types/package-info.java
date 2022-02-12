@@ -8,8 +8,6 @@ package voyeur.types;
 /*-
  * ##########################################################################
  * Local Area Network Voyeur
- * $Id$
- * $HeadURL$
  * %%
  * Copyright (C) 2019 - 2022 Allen D. Ball
  * %%

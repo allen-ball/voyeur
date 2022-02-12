@@ -1,6 +1,7 @@
 voyeur
 ======
 
+
 Description
 -----------
 
@@ -8,6 +9,7 @@ A Spring Boot Web server which provides reference information for
 [UPNP](https://openconnectivity.org/developer/specifications/upnp-resources/upnp-developer-resources),
 [SSDP](https://tools.ietf.org/id/draft-cai-ssdp-v1-03.txt), and
 [`nmap`](https://nmap.org/) output for hosts found on the LAN.
+
 
 Installation
 ------------
@@ -37,6 +39,7 @@ and then (from another shell):
 open http://localhost:8080/
 ```
 
+
 Usage
 -----
 
@@ -49,13 +52,17 @@ Sample Nmap screenshot:
 
 ![](screen-shot-nmap.png)
 
+
 Documentation
 -------------
 
 Javadoc is published at https://allen-ball.github.io/voyeur/.
 
+
 License
 -------
 
-This code is under the
-[Apache License, Version 2.0, January 2004](https://www.apache.org/licenses/LICENSE-2.0).
+This code is released under the [Apache License, Version 2.0, January 2004].
+
+
+[Apache License, Version 2.0, January 2004]: https://www.apache.org/licenses/LICENSE-2.0

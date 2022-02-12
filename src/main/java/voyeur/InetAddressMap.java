@@ -28,8 +28,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
  *
  * @author {@link.uri mailto:ball@hcf.dev Allen D. Ball}
  */
-public abstract class InetAddressMap<V>
-                extends ConcurrentSkipListMap<InetAddress,V> {
+public abstract class InetAddressMap<V> extends ConcurrentSkipListMap<InetAddress,V> {
     private static final long serialVersionUID = 4096581096396052201L;
 
     private static final Comparator<InetAddress> COMPARATOR =

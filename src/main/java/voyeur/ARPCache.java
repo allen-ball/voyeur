@@ -89,9 +89,7 @@ public class ARPCache extends InetAddressMap<HardwareAddress> {
             Files.lines(path, UTF_8)
             .skip(1)
             .map(t -> t.split("[\\p{Space}]+"))
-            .collect(toMap(k -> getInetAddress(k[0]),
-                           v -> new HardwareAddress(v[3]),
-                           (t, u) -> t, ARPCache::new));
+            .collect(toMap(k -> getInetAddress(k[0]), v -> new HardwareAddress(v[3]), (t, u) -> t, ARPCache::new));
 
         return map;
     }
@@ -104,12 +102,10 @@ public class ARPCache extends InetAddressMap<HardwareAddress> {
 
             try (var in = process.getInputStream()) {
                 map =
-                    new BufferedReader(new InputStreamReader(in, UTF_8))
-                    .lines()
+                    new BufferedReader(new InputStreamReader(in, UTF_8)).lines()
                     .map(PATTERN::matcher)
                     .filter(Matcher::matches)
-                    .collect(toMap(k -> getInetAddress(k.group("inet")),
-                                   v -> new HardwareAddress(v.group("mac")),
+                    .collect(toMap(k -> getInetAddress(k.group("inet")), v -> new HardwareAddress(v.group("mac")),
                                    (t, u) -> t, ARPCache::new));
             }
 

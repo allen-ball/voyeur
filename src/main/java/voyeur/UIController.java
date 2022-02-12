@@ -55,8 +55,7 @@ public class UIController extends AbstractController {
     @ModelAttribute("upnp")
     public Map<URI,List<URI>> upnp() {
         var map =
-            ssdp().values()
-            .stream()
+            ssdp().values().stream()
             .collect(groupingBy(SSDPMessage::getLocation,
                                 ConcurrentSkipListMap::new,
                                 mapping(SSDPMessage::getUSN, toList())));

@@ -115,8 +115,7 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
         transformer = TransformerFactory.newInstance().newTransformer();
         transformer.setOutputProperty(OMIT_XML_DECLARATION, NO);
         transformer.setOutputProperty(INDENT, YES);
-        transformer.setOutputProperty(XALAN_INDENT_AMOUNT.toString(),
-                                      String.valueOf(2));
+        transformer.setOutputProperty(XALAN_INDENT_AMOUNT.toString(), String.valueOf(2));
 
         try {
             var argv = Stream.of(NMAP, "-version").collect(toList());
@@ -130,8 +129,7 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
                 .start();
 
             try (var in = process.getInputStream()) {
-                new BufferedReader(new InputStreamReader(in, UTF_8))
-                    .lines()
+                new BufferedReader(new InputStreamReader(in, UTF_8)).lines()
                     .forEach(t -> log.info("{}", t));
             }
 
@@ -157,28 +155,24 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
 
                 empty.appendChild(empty.createElement("nmaprun"));
 
-                interfaces
-                    .stream()
+                interfaces.stream()
                     .map(NetworkInterface::getInterfaceAddresses)
                     .flatMap(List::stream)
                     .map(InterfaceAddress::getAddress)
                     .filter(t -> (! t.isMulticastAddress()))
                     .forEach(t -> putIfAbsent(t, empty));
 
-                arp.keySet()
-                    .stream()
+                arp.keySet().stream()
                     .filter(t -> (! t.isMulticastAddress()))
                     .forEach(t -> putIfAbsent(t, empty));
 
-                ssdp.values()
-                    .stream()
+                ssdp.values().stream()
                     .filter(t -> t instanceof SSDPResponse)
                     .map(t -> ((SSDPResponse) t).getSocketAddress())
                     .map(t -> ((InetSocketAddress) t).getAddress())
                     .forEach(t -> putIfAbsent(t, empty));
 
-                keySet()
-                    .stream()
+                keySet().stream()
                     .filter(t -> INTERVAL.compareTo(getOutputAge(t)) < 0)
                     .map(Worker::new)
                     .forEach(t -> executor.execute(t));
@@ -192,8 +186,7 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
     public String nmap(@PathVariable String ip) throws Exception {
         var out = new ByteArrayOutputStream();
 
-        transformer.transform(new DOMSource(get(InetAddress.getByName(ip))),
-                              new StreamResult(out));
+        transformer.transform(new DOMSource(get(InetAddress.getByName(ip))), new StreamResult(out));
 
         return out.toString(UTF_8.name());
     }
@@ -282,8 +275,7 @@ public class Nmap extends InetAddressMap<Document> implements XalanConstants {
                     int status = process.waitFor();
 
                     if (status != 0) {
-                        throw new IOException(argv + " returned exit status "
-                                              + status);
+                        throw new IOException(argv + " returned exit status " + status);
                     }
                 }
             } catch (Exception exception) {
