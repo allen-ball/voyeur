@@ -12,7 +12,7 @@
 <span class="sourceLineNo">003</span><a id="line.3"> * ##########################################################################</a>
 <span class="sourceLineNo">004</span><a id="line.4"> * Local Area Network Voyeur</a>
 <span class="sourceLineNo">005</span><a id="line.5"> * %%</a>
-<span class="sourceLineNo">006</span><a id="line.6"> * Copyright (C) 2019 - 2021 Allen D. Ball</a>
+<span class="sourceLineNo">006</span><a id="line.6"> * Copyright (C) 2019 - 2022 Allen D. Ball</a>
 <span class="sourceLineNo">007</span><a id="line.7"> * %%</a>
 <span class="sourceLineNo">008</span><a id="line.8"> * Licensed under the Apache License, Version 2.0 (the "License");</a>
 <span class="sourceLineNo">009</span><a id="line.9"> * you may not use this file except in compliance with the License.</a>
@@ -98,56 +98,52 @@
 <span class="sourceLineNo">089</span><a id="line.89">            Files.lines(path, UTF_8)</a>
 <span class="sourceLineNo">090</span><a id="line.90">            .skip(1)</a>
 <span class="sourceLineNo">091</span><a id="line.91">            .map(t -&gt; t.split("[\\p{Space}]+"))</a>
-<span class="sourceLineNo">092</span><a id="line.92">            .collect(toMap(k -&gt; getInetAddress(k[0]),</a>
-<span class="sourceLineNo">093</span><a id="line.93">                           v -&gt; new HardwareAddress(v[3]),</a>
-<span class="sourceLineNo">094</span><a id="line.94">                           (t, u) -&gt; t, ARPCache::new));</a>
-<span class="sourceLineNo">095</span><a id="line.95"></a>
-<span class="sourceLineNo">096</span><a id="line.96">        return map;</a>
-<span class="sourceLineNo">097</span><a id="line.97">    }</a>
-<span class="sourceLineNo">098</span><a id="line.98"></a>
-<span class="sourceLineNo">099</span><a id="line.99">    private ARPCache parse(ProcessBuilder builder) throws Exception {</a>
-<span class="sourceLineNo">100</span><a id="line.100">        ARPCache map = null;</a>
-<span class="sourceLineNo">101</span><a id="line.101"></a>
-<span class="sourceLineNo">102</span><a id="line.102">        try {</a>
-<span class="sourceLineNo">103</span><a id="line.103">            var process = builder.start();</a>
-<span class="sourceLineNo">104</span><a id="line.104"></a>
-<span class="sourceLineNo">105</span><a id="line.105">            try (var in = process.getInputStream()) {</a>
-<span class="sourceLineNo">106</span><a id="line.106">                map =</a>
-<span class="sourceLineNo">107</span><a id="line.107">                    new BufferedReader(new InputStreamReader(in, UTF_8))</a>
-<span class="sourceLineNo">108</span><a id="line.108">                    .lines()</a>
-<span class="sourceLineNo">109</span><a id="line.109">                    .map(PATTERN::matcher)</a>
-<span class="sourceLineNo">110</span><a id="line.110">                    .filter(Matcher::matches)</a>
-<span class="sourceLineNo">111</span><a id="line.111">                    .collect(toMap(k -&gt; getInetAddress(k.group("inet")),</a>
-<span class="sourceLineNo">112</span><a id="line.112">                                   v -&gt; new HardwareAddress(v.group("mac")),</a>
-<span class="sourceLineNo">113</span><a id="line.113">                                   (t, u) -&gt; t, ARPCache::new));</a>
-<span class="sourceLineNo">114</span><a id="line.114">            }</a>
-<span class="sourceLineNo">115</span><a id="line.115"></a>
-<span class="sourceLineNo">116</span><a id="line.116">            disabled = (process.waitFor() != 0);</a>
-<span class="sourceLineNo">117</span><a id="line.117">        } catch (Exception exception) {</a>
-<span class="sourceLineNo">118</span><a id="line.118">            disabled = true;</a>
+<span class="sourceLineNo">092</span><a id="line.92">            .collect(toMap(k -&gt; getInetAddress(k[0]), v -&gt; new HardwareAddress(v[3]), (t, u) -&gt; t, ARPCache::new));</a>
+<span class="sourceLineNo">093</span><a id="line.93"></a>
+<span class="sourceLineNo">094</span><a id="line.94">        return map;</a>
+<span class="sourceLineNo">095</span><a id="line.95">    }</a>
+<span class="sourceLineNo">096</span><a id="line.96"></a>
+<span class="sourceLineNo">097</span><a id="line.97">    private ARPCache parse(ProcessBuilder builder) throws Exception {</a>
+<span class="sourceLineNo">098</span><a id="line.98">        ARPCache map = null;</a>
+<span class="sourceLineNo">099</span><a id="line.99"></a>
+<span class="sourceLineNo">100</span><a id="line.100">        try {</a>
+<span class="sourceLineNo">101</span><a id="line.101">            var process = builder.start();</a>
+<span class="sourceLineNo">102</span><a id="line.102"></a>
+<span class="sourceLineNo">103</span><a id="line.103">            try (var in = process.getInputStream()) {</a>
+<span class="sourceLineNo">104</span><a id="line.104">                map =</a>
+<span class="sourceLineNo">105</span><a id="line.105">                    new BufferedReader(new InputStreamReader(in, UTF_8)).lines()</a>
+<span class="sourceLineNo">106</span><a id="line.106">                    .map(PATTERN::matcher)</a>
+<span class="sourceLineNo">107</span><a id="line.107">                    .filter(Matcher::matches)</a>
+<span class="sourceLineNo">108</span><a id="line.108">                    .collect(toMap(k -&gt; getInetAddress(k.group("inet")), v -&gt; new HardwareAddress(v.group("mac")),</a>
+<span class="sourceLineNo">109</span><a id="line.109">                                   (t, u) -&gt; t, ARPCache::new));</a>
+<span class="sourceLineNo">110</span><a id="line.110">            }</a>
+<span class="sourceLineNo">111</span><a id="line.111"></a>
+<span class="sourceLineNo">112</span><a id="line.112">            disabled = (process.waitFor() != 0);</a>
+<span class="sourceLineNo">113</span><a id="line.113">        } catch (Exception exception) {</a>
+<span class="sourceLineNo">114</span><a id="line.114">            disabled = true;</a>
+<span class="sourceLineNo">115</span><a id="line.115">        }</a>
+<span class="sourceLineNo">116</span><a id="line.116"></a>
+<span class="sourceLineNo">117</span><a id="line.117">        if (disabled) {</a>
+<span class="sourceLineNo">118</span><a id="line.118">            log.warn("arp command is not available");</a>
 <span class="sourceLineNo">119</span><a id="line.119">        }</a>
 <span class="sourceLineNo">120</span><a id="line.120"></a>
-<span class="sourceLineNo">121</span><a id="line.121">        if (disabled) {</a>
-<span class="sourceLineNo">122</span><a id="line.122">            log.warn("arp command is not available");</a>
-<span class="sourceLineNo">123</span><a id="line.123">        }</a>
-<span class="sourceLineNo">124</span><a id="line.124"></a>
-<span class="sourceLineNo">125</span><a id="line.125">        return map;</a>
-<span class="sourceLineNo">126</span><a id="line.126">    }</a>
-<span class="sourceLineNo">127</span><a id="line.127"></a>
-<span class="sourceLineNo">128</span><a id="line.128">    private InetAddress getInetAddress(String string) {</a>
-<span class="sourceLineNo">129</span><a id="line.129">        InetAddress address = null;</a>
-<span class="sourceLineNo">130</span><a id="line.130"></a>
-<span class="sourceLineNo">131</span><a id="line.131">        try {</a>
-<span class="sourceLineNo">132</span><a id="line.132">            address = InetAddress.getByName(string);</a>
-<span class="sourceLineNo">133</span><a id="line.133">        } catch (RuntimeException exception) {</a>
-<span class="sourceLineNo">134</span><a id="line.134">            throw exception;</a>
-<span class="sourceLineNo">135</span><a id="line.135">        } catch (Exception exception) {</a>
-<span class="sourceLineNo">136</span><a id="line.136">            throw new IllegalStateException(exception);</a>
-<span class="sourceLineNo">137</span><a id="line.137">        }</a>
-<span class="sourceLineNo">138</span><a id="line.138"></a>
-<span class="sourceLineNo">139</span><a id="line.139">        return address;</a>
-<span class="sourceLineNo">140</span><a id="line.140">    }</a>
-<span class="sourceLineNo">141</span><a id="line.141">}</a>
+<span class="sourceLineNo">121</span><a id="line.121">        return map;</a>
+<span class="sourceLineNo">122</span><a id="line.122">    }</a>
+<span class="sourceLineNo">123</span><a id="line.123"></a>
+<span class="sourceLineNo">124</span><a id="line.124">    private InetAddress getInetAddress(String string) {</a>
+<span class="sourceLineNo">125</span><a id="line.125">        InetAddress address = null;</a>
+<span class="sourceLineNo">126</span><a id="line.126"></a>
+<span class="sourceLineNo">127</span><a id="line.127">        try {</a>
+<span class="sourceLineNo">128</span><a id="line.128">            address = InetAddress.getByName(string);</a>
+<span class="sourceLineNo">129</span><a id="line.129">        } catch (RuntimeException exception) {</a>
+<span class="sourceLineNo">130</span><a id="line.130">            throw exception;</a>
+<span class="sourceLineNo">131</span><a id="line.131">        } catch (Exception exception) {</a>
+<span class="sourceLineNo">132</span><a id="line.132">            throw new IllegalStateException(exception);</a>
+<span class="sourceLineNo">133</span><a id="line.133">        }</a>
+<span class="sourceLineNo">134</span><a id="line.134"></a>
+<span class="sourceLineNo">135</span><a id="line.135">        return address;</a>
+<span class="sourceLineNo">136</span><a id="line.136">    }</a>
+<span class="sourceLineNo">137</span><a id="line.137">}</a>
 
 
 
