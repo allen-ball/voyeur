@@ -23,16 +23,17 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <name>Local Area Network Voyeur</name>
-  <description></description>
   <groupId>ball</groupId>
   <artifactId>voyeur</artifactId>
   <version>2.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
+  <name>${project.groupId}:${project.artifactId}</name>
+  <description>Local Area Network Voyeur</description>
+  <url>https://github.com/allen-ball/voyeur</url>
   <parent>
     <groupId>ball</groupId>
     <artifactId>parent</artifactId>
-    <version>2022.0.1</version>
+    <version>2022.1.0</version>
     <relativePath/>
   </parent>
   <organization>
@@ -65,7 +66,7 @@
     </pluginRepository>
   </pluginRepositories>
   <properties>
-    <jse.target>11</jse.target>
+    <maven.compiler.release>11</maven.compiler.release>
     <start-class>voyeur.Launcher</start-class>
   </properties>
   <dependencies verbose="true">
@@ -134,7 +135,7 @@
     <dependency>
       <groupId>org.webjars.npm</groupId>
       <artifactId>bulma</artifactId>
-      <version>0.9.3</version>
+      <version>0.9.4</version>
     </dependency>
   </dependencies>
   <build>
