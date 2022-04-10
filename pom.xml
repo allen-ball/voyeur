@@ -141,16 +141,6 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <configuration>
-            <links combine.children="append">
-              <link>https://repo.hcf.dev/javadoc/ball-api/${ball-parent.version}/</link>
-            </links>
-            <linksource>true</linksource>
-          </configuration>
-        </plugin>
-        <plugin>
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-maven-plugin</artifactId>
           <executions>
