@@ -66,6 +66,8 @@
     </pluginRepository>
   </pluginRepositories>
   <properties>
+    <maven.deploy.skip>true</maven.deploy.skip>
+
     <maven.compiler.release>11</maven.compiler.release>
     <start-class>voyeur.Launcher</start-class>
   </properties>
