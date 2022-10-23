@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   ##########################################################################
-  Local Area Network Voyeur
   %%
   Copyright (C) 2019 - 2022 Allen D. Ball
   %%
@@ -23,25 +22,27 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <name>voyeur</name>
-  <groupId>javadoc</groupId>
-  <artifactId>voyeur</artifactId>
+  <groupId>dev.hcf</groupId>
+  <artifactId>voyeur-gh-pages</artifactId>
+  <version>2.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
+  <name>${javadoc.groupId}:${javadoc.artifactId} API</name>
   <parent>
-    <groupId>ball</groupId>
-    <artifactId>javadoc</artifactId>
-    <version>2022.0.0</version>
-    <relativePath>../GitHub/javadoc/pom.xml</relativePath>
+    <groupId>dev.hcf.ball</groupId>
+    <artifactId>javadoc-parent</artifactId>
+    <version>2022.1.2-SNAPSHOT</version>
+    <relativePath>../ball/javadoc-parent/pom.xml</relativePath>
   </parent>
   <properties>
-    <javadoc.artifact>${project.artifactId}</javadoc.artifact>
-    <javadoc.version>2.0.0-SNAPSHOT</javadoc.version>
+    <javadoc.groupId>${project.groupId}</javadoc.groupId>
+    <javadoc.artifactId>voyeur</javadoc.artifactId>
+    <javadoc.version>${project.version}</javadoc.version>
     <maven.compiler.source>11</maven.compiler.source>
   </properties>
   <dependencies verbose="true">
     <dependency>
-      <groupId>ball</groupId>
-      <artifactId>${javadoc.artifact}</artifactId>
+      <groupId>${javadoc.groupId}</groupId>
+      <artifactId>${javadoc.artifactId}</artifactId>
       <version>${javadoc.version}</version>
     </dependency>
   </dependencies>
@@ -52,11 +53,11 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
           <includeDependencySources>true</includeDependencySources>
-          <dependencySourceIncludes>ball:${project.artifactId}</dependencySourceIncludes>
+          <dependencySourceIncludes>${javadoc.groupId}:${javadoc.artifactId}</dependencySourceIncludes>
           <doctitle>API Documentation</doctitle>
           <groups>
             <group>
-              <title>${project.artifactId}.jar</title>
+              <title>${javadoc.artifactId}.jar</title>
               <packages>*</packages>
             </group>
           </groups>
