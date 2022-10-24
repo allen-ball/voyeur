@@ -30,7 +30,7 @@
   <parent>
     <groupId>dev.hcf.ball</groupId>
     <artifactId>javadoc-parent</artifactId>
-    <version>2022.1.2-SNAPSHOT</version>
+    <version>2022.1.2</version>
     <relativePath>../ball/javadoc-parent/pom.xml</relativePath>
   </parent>
   <properties>
