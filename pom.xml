@@ -3,7 +3,7 @@
   ##########################################################################
   Local Area Network Voyeur
   %%
-  Copyright (C) 2019 - 2022 Allen D. Ball
+  Copyright (C) 2019 - 2023 Allen D. Ball
   %%
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@
   <parent>
     <groupId>dev.hcf.ball</groupId>
     <artifactId>parent</artifactId>
-    <version>2022.1.2</version>
+    <version>2023.1.4</version>
     <relativePath/>
   </parent>
   <organization>
@@ -51,20 +51,6 @@
   <scm>
     <url>https://github.com/allen-ball/voyeur.git</url>
   </scm>
-  <repositories>
-    <repository>
-      <id>repo.hcf.dev-RELEASE</id>
-      <name>hcf.dev RELEASE Repository</name>
-      <url>https://repo.hcf.dev/maven/release/</url>
-      <layout>default</layout>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>repo.hcf.dev-RELEASE</id>
-      <url>https://repo.hcf.dev/maven/release/</url>
-    </pluginRepository>
-  </pluginRepositories>
   <properties>
     <maven.deploy.skip>true</maven.deploy.skip>
 
